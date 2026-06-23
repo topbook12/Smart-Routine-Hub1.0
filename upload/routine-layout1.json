@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "The image is a **Class Routine for Spring 2026** structured as a tabular grid with the following layout:  \n\n\n### **Columns**  \nThe table has **8 columns** (from left to right):  \n1. **Day**: Labels the day of the week (e.g., \"Sat\", \"Sun\").  \n2. **Batch/Semest**: Indicates the academic batch/semester (e.g., \"23rd / 8th\", \"24th / 7th\", \"26th / 5th Sec 2\", etc.).  \n3. **09.30 am – 10.30 am**: Time slot for morning classes.  \n4. **10.30 am – 11.30 am**: Time slot for morning classes.  \n5. **11.30 am – 12.30 pm**: Time slot for morning classes.  \n6. **12.30 pm – 01.30 pm**: Time slot for afternoon classes.  \n7. **2.15 pm – 03.15 pm**: Time slot for afternoon classes.  \n8. **3.15 pm – 04.15 pm**: Time slot for afternoon classes.  \n\n\n### **Rows**  \nThe table has **2 main row groups** (separated by a thick horizontal line), each corresponding to a day of the week:  \n1. **Saturday (Sat)**: Contains 10 sub-rows (each representing a unique batch/semester combination, e.g., \"23rd / 8th\", \"24th / 7th\", \"26th / 5th Sec 2\", etc.).  \n2. **Sunday (Sun)**: Contains 10 sub-rows (each representing a unique batch/semester combination, e.g., \"24th / 7th\", \"25th / 6th\", \"26th / 5th Sec 1\", etc.).  \n\n\n### **Time Slots**  \nThe time slots (columns 3–8) are:  \n- Morning: 09.30 am – 10.30 am, 10.30 am – 11.30 am, 11.30 am – 12.30 pm  \n- Afternoon: 12.30 pm – 01.30 pm, 2.15 pm – 03.15 pm, 3.15 pm – 04.15 pm  \n\n\n### **Days Shown**  \nOnly two days are included: **Saturday (Sat)** and **Sunday (Sun)**.  \n\n\n### **Semesters/Programs**  \nThe \"Batch/Semest\" column lists academic batches/semesters (e.g., \"23rd / 8th\", \"24th / 7th\", \"26th / 5th Sec 2\", \"27th / 4th\", \"28th / 3rd Sec 1\", \"28th / 3rd Sec 2\", \"29th / 2nd Sec 1\", \"29th / 2nd Sec 2\", \"30th / 1st Sec 1\", \"30th / 1st Sec 2\" for Saturday; and \"24th / 7th\", \"25th / 6th\", \"26th / 5th Sec 1\", \"26th / 5th Sec 2\", \"28th / 3rd Sec 1\", \"28th / 3rd Sec 2\", \"29th / 2nd Sec 1\", \"29th / 2nd Sec 2\" for Sunday). These represent different academic cohorts or sections.  \n\n\n### **Grid Structure Summary**  \n- **Rows**: 2 main rows (Sat, Sun), each with 10 sub-rows (batch/semester combinations).  \n- **Columns**: 8 total (Day, Batch/Semest, 6 time slots).  \n- **Time Slots**: 6 (3 morning, 3 afternoon).  \n- **Days**: 2 (Sat, Sun).  \n- **Semesters/Programs**: Listed in the \"Batch/Semest\" column (various batch/semester/section combinations).  \n\nEach cell in the grid contains class details (course code, instructor, room number) for the corresponding day, batch/semester, and time slot.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782210541,
+  "id": "202606231828328aed5295a2044543",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "202606231828328aed5295a2044543",
+  "usage": {
+    "completion_tokens": 882,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 6114,
+    "prompt_tokens_details": {
+      "cached_tokens": 5
+    },
+    "total_tokens": 6996
+  }
+}

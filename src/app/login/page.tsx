@@ -1,0 +1,383 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  AlertCircle,
+  Eraser,
+  Delete,
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  Mail,
+  ShieldCheck,
+  Sparkles,
+  KeyRound,
+  ArrowLeft,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useSettingsStore } from "@/store/settings-store";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+
+type Mode = "email" | "pin";
+
+export default function LoginPage() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const settings = useSettingsStore((s) => s.settings);
+  const [mode, setMode] = useState<Mode>("email");
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      const role = (session.user as { role?: string }).role;
+      router.replace(role === "admin" ? "/admin" : "/teacher");
+    }
+  }, [status, session, router]);
+
+  return (
+    <div className="relative min-h-[calc(100vh-3.5rem)] lg:min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-8 overflow-hidden hero-bg">
+      {/* Animated blobs */}
+      <div className="absolute top-10 left-10 h-48 w-48 rounded-full bg-teal-400/20 blur-3xl animate-blob" />
+      <div className="absolute bottom-10 right-10 h-56 w-56 rounded-full bg-amber-400/15 blur-3xl animate-blob" style={{ animationDelay: "5s" }} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-72 w-72 rounded-full bg-cyan-400/10 blur-3xl animate-blob" style={{ animationDelay: "10s" }} />
+
+      <div className="relative z-10 w-full max-w-md">
+        {/* Top-right theme toggle */}
+        <div className="flex justify-end mb-2">
+          <ThemeToggle />
+        </div>
+
+        {/* Back to home */}
+        <button
+          onClick={() => router.push("/?view=home")}
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary mb-4 transition-colors"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" /> Back to home
+        </button>
+
+        {/* Logo & title */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-6"
+        >
+          <div className="inline-flex h-16 w-16 rounded-2xl bg-gradient-to-br from-teal-500 via-emerald-500 to-cyan-500 items-center justify-center shadow-teal-glow mb-3 relative">
+            <Sparkles className="h-8 w-8 text-white" />
+            <motion.span
+              animate={{ rotate: 360 }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 rounded-2xl border-2 border-dashed border-white/30"
+            />
+          </div>
+          <h1 className="text-2xl font-bold text-gradient-primary">{settings.siteName}</h1>
+          <p className="text-xs text-muted-foreground mt-1">{settings.departmentName}</p>
+        </motion.div>
+
+        {/* Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 16, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.1 }}
+          className="glass-premium rounded-2xl p-6 sm:p-7 shadow-2xl"
+        >
+          {/* Mode toggle */}
+          <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-muted/60 mb-6">
+            {(["email", "pin"] as Mode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                className={cn(
+                  "relative py-2 rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-1.5",
+                  mode === m ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {mode === m && (
+                  <motion.span
+                    layoutId="login-mode"
+                    className="absolute inset-0 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 shadow-teal-glow"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10 flex items-center gap-1.5">
+                  {m === "email" ? <Mail className="h-3.5 w-3.5" /> : <KeyRound className="h-3.5 w-3.5" />}
+                  {m === "email" ? "Email Login" : "PIN Login"}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <AnimatePresence mode="wait">
+            {mode === "email" ? (
+              <EmailForm key="email" />
+            ) : (
+              <PinForm key="pin" />
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Demo credentials */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mt-4 p-3 rounded-xl bg-card/60 border border-border text-[11px] text-muted-foreground"
+        >
+          <p className="font-semibold mb-1 flex items-center gap-1.5">
+            <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Demo credentials
+          </p>
+          <p>Admin → <code className="text-primary">admin@ice.ru.ac.bd</code> / <code className="text-primary">admin123</code></p>
+          <p>Teacher → <code className="text-primary">mrh@ice.ru.ac.bd</code> / <code className="text-primary">teacher123</code></p>
+          <p className="mt-1">PIN → any teacher&apos;s 6-digit PIN (e.g. <code className="text-primary">000000</code> for admin)</p>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+function EmailForm() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    setLoading(false);
+    if (res?.error) {
+      setError("Invalid email or password. Please try again.");
+      return;
+    }
+    toast.success("Logged in successfully");
+    // Fetch role to redirect
+    try {
+      const r = await fetch("/api/user").then((x) => x.json());
+      const role = r?.user?.role;
+      router.replace(role === "admin" ? "/admin" : "/teacher");
+    } catch {
+      router.replace("/");
+    }
+  };
+
+  return (
+    <motion.form
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 10 }}
+      onSubmit={onSubmit}
+      className="space-y-4"
+    >
+      <div>
+        <Label htmlFor="email" className="text-xs">Email address</Label>
+        <div className="relative mt-1.5">
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            id="email"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@ice.ru.ac.bd"
+            className="pl-9 h-11"
+            autoComplete="email"
+          />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="password" className="text-xs">Password</Label>
+        <div className="relative mt-1.5">
+          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            id="password"
+            type={showPass ? "text" : "password"}
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            className="pl-9 pr-10 h-11"
+            autoComplete="current-password"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPass((v) => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </div>
+      </div>
+
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-xs text-red-700 dark:text-red-300"
+        >
+          <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+          <span>{error}</span>
+        </motion.div>
+      )}
+
+      <Button
+        type="submit"
+        disabled={loading}
+        className="w-full h-11 btn-3d bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white gap-1.5"
+      >
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
+        {loading ? "Signing in…" : "Sign In"}
+      </Button>
+    </motion.form>
+  );
+}
+
+function PinForm() {
+  const router = useRouter();
+  const [pin, setPin] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const submittedRef = useRef(false);
+
+  const submit = async (value: string) => {
+    if (submittedRef.current) return;
+    submittedRef.current = true;
+    setLoading(true);
+    setError(null);
+    const res = await signIn("pin", { pin: value, redirect: false });
+    setLoading(false);
+    if (res?.error) {
+      setError("Invalid PIN. Please try again.");
+      setPin("");
+      submittedRef.current = false;
+      return;
+    }
+    toast.success("PIN verified");
+    try {
+      const r = await fetch("/api/user").then((x) => x.json());
+      const role = r?.user?.role;
+      router.replace(role === "admin" ? "/admin" : "/teacher");
+    } catch {
+      router.replace("/");
+    }
+  };
+
+  const press = (digit: string) => {
+    if (pin.length >= 6 || loading) return;
+    const next = pin + digit;
+    setPin(next);
+    if (next.length === 6) {
+      submit(next);
+    }
+  };
+
+  const backspace = () => {
+    if (loading) return;
+    setPin((p) => p.slice(0, -1));
+    setError(null);
+  };
+
+  const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "clear", "0", "back"];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 10 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -10 }}
+      className="space-y-5"
+    >
+      <p className="text-xs text-muted-foreground text-center">
+        Enter your 6-digit PIN to sign in instantly
+      </p>
+
+      {/* PIN dots */}
+      <div className="flex items-center justify-center gap-2.5">
+        {[0, 1, 2, 3, 4, 5].map((i) => {
+          const filled = i < pin.length;
+          return (
+            <motion.div
+              key={i}
+              animate={{ scale: filled ? 1.1 : 1 }}
+              className={cn(
+                "h-3.5 w-3.5 rounded-full border-2 transition-colors",
+                filled
+                  ? "bg-gradient-to-br from-amber-500 to-orange-500 border-transparent shadow-amber-glow"
+                  : "border-border bg-muted/40"
+              )}
+            />
+          );
+        })}
+      </div>
+
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-xs text-red-700 dark:text-red-300"
+        >
+          <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+          <span>{error}</span>
+        </motion.div>
+      )}
+
+      {/* Keypad */}
+      <div className="grid grid-cols-3 gap-2.5">
+        {KEYS.map((k) => {
+          if (k === "clear") {
+            return (
+              <button
+                key="clear"
+                onClick={() => {
+                  setPin("");
+                  setError(null);
+                }}
+                disabled={loading || !pin}
+                className="h-14 rounded-xl bg-muted/60 border border-border text-sm font-medium text-muted-foreground hover:bg-muted disabled:opacity-40 transition-colors flex items-center justify-center gap-1"
+              >
+                <Delete className="h-4 w-4" />
+              </button>
+            );
+          }
+          if (k === "back") {
+            return (
+              <button
+                key="back"
+                onClick={backspace}
+                disabled={loading || !pin}
+                className="h-14 rounded-xl bg-muted/60 border border-border text-sm font-medium text-muted-foreground hover:bg-muted disabled:opacity-40 transition-colors flex items-center justify-center"
+              >
+                <Eraser className="h-4 w-4" />
+              </button>
+            );
+          }
+          return (
+            <motion.button
+              key={k}
+              whileTap={{ scale: 0.92 }}
+              onClick={() => press(k)}
+              disabled={loading || pin.length >= 6}
+              className="h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white text-xl font-bold btn-3d shadow-amber-glow disabled:opacity-40"
+            >
+              {loading && pin.length === 6 ? <Loader2 className="h-5 w-5 animate-spin mx-auto" /> : k}
+            </motion.button>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
