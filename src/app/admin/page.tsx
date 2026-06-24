@@ -63,7 +63,6 @@ const NAV: { key: SectionKey; label: string; Icon: typeof LayoutDashboard }[] = 
 export default function AdminPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const { data: userResp } = useCurrentUser();
   const settings = useSettingsStore((s) => s.settings);
   const [section, setSection] = useState<SectionKey>("dashboard");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -89,8 +88,11 @@ export default function AdminPage() {
     );
   }
 
-  const user = userResp?.user;
-  if (user && user.role !== "admin") {
+  // Derive role directly from the NextAuth session token (no extra fetch needed).
+  const sessionRole = (session?.user as { role?: string } | undefined)?.role;
+  const sessionName = session?.user?.name ?? "Admin";
+
+  if (sessionRole && sessionRole !== "admin") {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <motion.div
@@ -105,7 +107,7 @@ export default function AdminPage() {
           <p className="text-sm text-muted-foreground mb-4">
             This area is restricted to administrators. Your account doesn&apos;t have admin privileges.
           </p>
-          <Button onClick={() => router.replace("/")} className="btn-3d bg-gradient-to-r from-teal-600 to-emerald-600 text-white gap-1.5">
+          <Button onClick={() => router.replace("/")} className="btn-3d btn-ink gap-1.5">
             <Home className="h-4 w-4" /> Back to site
           </Button>
         </motion.div>
@@ -113,7 +115,8 @@ export default function AdminPage() {
     );
   }
 
-  if (!user) {
+  // session authenticated but role not yet in token — show loader briefly
+  if (!sessionRole) {
     return <div className="min-h-[60vh] flex items-center justify-center"><LoadingState /></div>;
   }
 
@@ -135,12 +138,12 @@ export default function AdminPage() {
       {/* User card */}
       <div className="px-4 py-3 border-b border-border/60">
         <div className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-full bg-gradient-to-br from-teal-500 to-emerald-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
-            {user.fullName.charAt(0).toUpperCase()}
+          <div className="h-9 w-9 rounded-full bg-ink flex items-center justify-center text-white font-bold text-sm shrink-0">
+            {sessionName.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-semibold truncate">{user.fullName}</p>
-            <p className="text-[10px] text-muted-foreground truncate">{user.email}</p>
+            <p className="text-xs font-semibold truncate">{sessionName}</p>
+            <p className="text-[10px] text-muted-foreground truncate">{(session?.user as { email?: string } | undefined)?.email ?? "admin@ice.ru.ac.bd"}</p>
           </div>
         </div>
       </div>

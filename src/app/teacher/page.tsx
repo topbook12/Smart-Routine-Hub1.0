@@ -64,9 +64,23 @@ const TABS = [
 
 export default function TeacherDashboardPage() {
   const router = useRouter();
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const { data: userResp } = useCurrentUser();
-  const user = userResp?.user ?? null;
+
+  // Derive user directly from the NextAuth session token so the page can
+  // render immediately after login without waiting for /api/user to resolve.
+  // The full user object (from /api/user) is still preferred when available
+  // because it carries extra fields (designation, department, etc.).
+  const sessionUser = session?.user as { id?: string; name?: string | null; email?: string | null; role?: string } | undefined;
+  const user = userResp?.user ?? (sessionUser && sessionUser.id && sessionUser.role
+    ? {
+        id: sessionUser.id,
+        fullName: sessionUser.name ?? "User",
+        email: sessionUser.email ?? "",
+        role: sessionUser.role as "admin" | "teacher",
+        isActive: true,
+      }
+    : null);
 
   // Admin can pick any teacher to view as
   const [adminTeacherId, setAdminTeacherId] = useState<string>("");
@@ -79,11 +93,15 @@ export default function TeacherDashboardPage() {
     }
   }, [status, router]);
 
-  // Loading state
-  if (status === "loading" || (status === "authenticated" && !user)) {
+  // Loading state — only wait for session, not /api/user
+  if (status === "loading") {
     return (
       <LoadingState message="Loading your dashboard…" className="min-h-[70vh]" />
     );
+  }
+
+  if (status === "unauthenticated") {
+    return <LoadingState message="Redirecting to login…" className="min-h-[70vh]" />;
   }
 
   if (!user) {

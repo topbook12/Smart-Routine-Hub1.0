@@ -23,7 +23,7 @@ const TODAY_NAME: DayOfWeek = (() => {
 export default function StudentDashboardPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const { data: studentResp } = useCurrentStudent();
+  const { data: studentResp, isLoading: studentLoading } = useCurrentStudent();
   const student = studentResp?.student;
 
   // Determine redirect target (if any) — perform the redirect in an effect,
@@ -32,7 +32,8 @@ export default function StudentDashboardPage() {
   let redirectTarget: string | null = null;
   if (status === "unauthenticated") {
     redirectTarget = "/login";
-  } else if (studentResp && !student) {
+  } else if (status === "authenticated" && role && role !== "student") {
+    // Logged in but not a student — send to the right dashboard
     if (role === "admin") redirectTarget = "/admin";
     else if (role === "teacher") redirectTarget = "/teacher";
     else redirectTarget = "/login";
@@ -42,12 +43,16 @@ export default function StudentDashboardPage() {
     if (redirectTarget) router.replace(redirectTarget);
   }, [redirectTarget, router]);
 
-  if (status === "loading" || (status === "authenticated" && !studentResp)) {
+  // Loading: session loading, OR session authenticated as student but
+  // /api/student/me hasn't resolved yet (isLoading, not just !data).
+  if (status === "loading" || (status === "authenticated" && role === "student" && studentLoading && !studentResp)) {
     return <div className="min-h-[60vh] flex items-center justify-center"><LoadingState message="Loading your dashboard…" /></div>;
   }
   if (redirectTarget) {
     return <div className="min-h-[60vh] flex items-center justify-center"><LoadingState message="Redirecting…" /></div>;
   }
+  // studentResp loaded but no student record (e.g. deactivated) — give a moment
+  // then redirect to login via the effect above only if role isn't student.
   if (!student) return <div className="min-h-[60vh] flex items-center justify-center"><LoadingState /></div>;
 
   return <StudentDashboard student={student} />;
