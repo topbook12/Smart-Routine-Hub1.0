@@ -26,19 +26,27 @@ export default function StudentDashboardPage() {
   const { data: studentResp } = useCurrentStudent();
   const student = studentResp?.student;
 
+  // Determine redirect target (if any) — perform the redirect in an effect,
+  // never during render, to avoid "setState while rendering" errors.
+  const role = (session?.user as { role?: string } | undefined)?.role;
+  let redirectTarget: string | null = null;
+  if (status === "unauthenticated") {
+    redirectTarget = "/login";
+  } else if (studentResp && !student) {
+    if (role === "admin") redirectTarget = "/admin";
+    else if (role === "teacher") redirectTarget = "/teacher";
+    else redirectTarget = "/login";
+  }
+
+  useEffect(() => {
+    if (redirectTarget) router.replace(redirectTarget);
+  }, [redirectTarget, router]);
+
   if (status === "loading" || (status === "authenticated" && !studentResp)) {
     return <div className="min-h-[60vh] flex items-center justify-center"><LoadingState message="Loading your dashboard…" /></div>;
   }
-  if (status === "unauthenticated") {
-    router.replace("/login");
-    return <div className="min-h-[60vh] flex items-center justify-center"><LoadingState message="Redirecting to login…" /></div>;
-  }
-  if (studentResp && !student) {
-    const role = (session?.user as { role?: string })?.role;
-    if (role === "admin") router.replace("/admin");
-    else if (role === "teacher") router.replace("/teacher");
-    else router.replace("/login");
-    return <div className="min-h-[60vh] flex items-center justify-center"><LoadingState /></div>;
+  if (redirectTarget) {
+    return <div className="min-h-[60vh] flex items-center justify-center"><LoadingState message="Redirecting…" /></div>;
   }
   if (!student) return <div className="min-h-[60vh] flex items-center justify-center"><LoadingState /></div>;
 

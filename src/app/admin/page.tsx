@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -68,6 +68,11 @@ export default function AdminPage() {
   const [section, setSection] = useState<SectionKey>("dashboard");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
+  // Redirect unauthenticated users in an effect (never during render).
+  useEffect(() => {
+    if (status === "unauthenticated") router.replace("/login");
+  }, [status, router]);
+
   if (status === "loading") {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -77,7 +82,6 @@ export default function AdminPage() {
   }
 
   if (status === "unauthenticated") {
-    router.replace("/login");
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <LoadingState message="Redirecting to login…" />
