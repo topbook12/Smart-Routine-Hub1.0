@@ -12,9 +12,11 @@ import {
   Home,
   LogOut,
   MoveRight,
+  Pencil,
   ShieldAlert,
   Sparkles,
   User as UserIcon,
+  UserCog,
 } from "lucide-react";
 import { useCurrentUser, useRealtimeTeachers } from "@/hooks/use-realtime-data";
 import type { User } from "@/types";
@@ -33,6 +35,8 @@ import { MyScheduleTab } from "@/components/teacher/my-schedule-tab";
 import { CancelRescheduleTab } from "@/components/teacher/cancel-reschedule-tab";
 import { NoticesTab } from "@/components/teacher/notices-tab";
 import { ExtraClassTab } from "@/components/teacher/extra-class-tab";
+import { EditScheduleTab } from "@/components/teacher/edit-schedule-tab";
+import { ProfileTab } from "@/components/teacher/profile-tab";
 import { RealtimeNotificationBar } from "@/components/teacher/realtime-notification-bar";
 
 const TABS = [
@@ -41,6 +45,12 @@ const TABS = [
     label: "My Schedule",
     icon: CalendarDays,
     short: "Schedule",
+  },
+  {
+    value: "edit",
+    label: "Edit Classes",
+    icon: Pencil,
+    short: "Edit",
   },
   {
     value: "manage",
@@ -59,6 +69,12 @@ const TABS = [
     label: "Add Extra Class",
     icon: CalendarPlus,
     short: "Extra",
+  },
+  {
+    value: "profile",
+    label: "My Profile",
+    icon: UserCog,
+    short: "Profile",
   },
 ] as const;
 
@@ -166,6 +182,14 @@ export default function TeacherDashboardPage() {
             )}
           </TabsContent>
 
+          <TabsContent value="edit" className="outline-none">
+            {effectiveTeacherId ? (
+              <EditScheduleTab teacherId={effectiveTeacherId} />
+            ) : (
+              <PickTeacherPrompt />
+            )}
+          </TabsContent>
+
           <TabsContent value="manage" className="outline-none">
             {effectiveTeacherId ? (
               <CancelRescheduleTab
@@ -190,6 +214,10 @@ export default function TeacherDashboardPage() {
             ) : (
               <PickTeacherPrompt />
             )}
+          </TabsContent>
+
+          <TabsContent value="profile" className="outline-none">
+            <ProfileTab userId={user.id} />
           </TabsContent>
         </Tabs>
       </main>
