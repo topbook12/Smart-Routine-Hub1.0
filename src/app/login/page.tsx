@@ -166,17 +166,23 @@ function EmailForm() {
       password,
       redirect: false,
     });
-    setLoading(false);
     if (res?.error) {
+      setLoading(false);
       setError("Invalid email or password. Please try again.");
       return;
     }
     toast.success("Logged in successfully");
-    // Fetch role to redirect
+    // Give NextAuth a moment to persist the session cookie, then fetch role.
+    // Without this delay, /api/user may return null (race condition) and the
+    // user gets bounced back to the login page.
+    await new Promise((r) => setTimeout(r, 400));
     try {
-      const r = await fetch("/api/user").then((x) => x.json());
+      const r = await fetch("/api/user", { cache: "no-store" }).then((x) => x.json());
       const role = r?.user?.role;
-      router.replace(role === "admin" ? "/admin" : "/teacher");
+      if (role === "admin") router.replace("/admin");
+      else if (role === "teacher") router.replace("/teacher");
+      else if (role === "student") router.replace("/student-dashboard");
+      else router.replace("/");
     } catch {
       router.replace("/");
     }
@@ -267,18 +273,24 @@ function PinForm() {
     setLoading(true);
     setError(null);
     const res = await signIn("pin", { pin: value, redirect: false });
-    setLoading(false);
     if (res?.error) {
+      setLoading(false);
       setError("Invalid PIN. Please try again.");
       setPin("");
       submittedRef.current = false;
       return;
     }
     toast.success("PIN verified");
+    // Give NextAuth a moment to persist the session cookie before fetching
+    // the role, otherwise /api/user may return null (race condition).
+    await new Promise((r) => setTimeout(r, 400));
     try {
-      const r = await fetch("/api/user").then((x) => x.json());
+      const r = await fetch("/api/user", { cache: "no-store" }).then((x) => x.json());
       const role = r?.user?.role;
-      router.replace(role === "admin" ? "/admin" : "/teacher");
+      if (role === "admin") router.replace("/admin");
+      else if (role === "teacher") router.replace("/teacher");
+      else if (role === "student") router.replace("/student-dashboard");
+      else router.replace("/");
     } catch {
       router.replace("/");
     }
@@ -406,12 +418,15 @@ function StudentForm() {
       password,
       redirect: false,
     });
-    setLoading(false);
     if (res?.error) {
+      setLoading(false);
       setError("Invalid roll number or password. Please try again.");
       return;
     }
     toast.success("Logged in as student");
+    // Small delay so NextAuth persists the session cookie before navigating
+    // to the dashboard, which immediately checks authentication.
+    await new Promise((r) => setTimeout(r, 400));
     router.replace("/student-dashboard");
   };
 
