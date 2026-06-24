@@ -289,6 +289,7 @@ export async function seedDatabase(force = false) {
     await db.libraryLink.deleteMany();
     await db.course.deleteMany();
     await db.room.deleteMany();
+    await db.student.deleteMany();
     await db.setting.deleteMany();
     await db.user.deleteMany();
   }
@@ -493,7 +494,41 @@ export async function seedDatabase(force = false) {
   });
   await db.libraryLink.createMany({ data: libLinks });
 
-  // 9) Settings
+  // 9) Students — sample students per semester
+  const studentPass = await bcrypt.hash("student123", 10);
+  const students = [];
+  const bscBatches = [
+    { batch: "23", semester: 8 }, { batch: "24", semester: 7 }, { batch: "25", semester: 6 },
+    { batch: "26", semester: 5 }, { batch: "27", semester: 4 }, { batch: "28", semester: 3 },
+    { batch: "29", semester: 2 }, { batch: "30", semester: 1 },
+  ];
+  for (const b of bscBatches) {
+    for (let i = 1; i <= 3; i++) {
+      students.push({
+        fullName: `Student ${b.batch}th Batch ${i}`,
+        rollNumber: `${b.batch}${String(i).padStart(3, "0")}`,
+        program: "bsc",
+        semester: b.semester,
+        passwordHash: studentPass,
+        isActive: true,
+      });
+    }
+  }
+  for (let s = 1; s <= 3; s++) {
+    for (let i = 1; i <= 2; i++) {
+      students.push({
+        fullName: `MSc Student Sem ${s} #${i}`,
+        rollNumber: `MSC${s}${String(i).padStart(2, "0")}`,
+        program: "msc",
+        semester: s,
+        passwordHash: studentPass,
+        isActive: true,
+      });
+    }
+  }
+  await db.student.createMany({ data: students });
+
+  // 10) Settings
   await db.setting.create({
     data: { key: "site_settings", value: JSON.stringify(DEFAULT_SETTINGS) },
   });
@@ -502,6 +537,7 @@ export async function seedDatabase(force = false) {
     skipped: false,
     admin: { email: admin.email, password: "admin123" },
     teacherSample: { email: "mrh@ice.ru.ac.bd", password: "teacher123", pin: "MRH000" },
+    studentSample: { roll: "30001", password: "student123", program: "bsc", semester: 1 },
     counts: {
       users: Object.keys(teacherMap).length + 1,
       rooms: ROOMS.length,
@@ -510,6 +546,7 @@ export async function seedDatabase(force = false) {
       schedules: scheduleCount,
       notices: 4,
       libraryLinks: libLinks.length,
+      students: students.length,
     },
   };
 }

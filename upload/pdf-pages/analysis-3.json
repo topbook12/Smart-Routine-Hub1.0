@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "### Colors (Hex)  \n- `--color-brand-primary`: `#FFE01B` (Cavendish Yellow)  \n- `--color-ink`: `#241C15` (Peppercorn)  \n- `--color-bg-cream`: `#FEDE9`  \n- `--color-bg-white`: `#FFFFFF`  \n- `--color-accent-green`: `#2D4F35`  \n- `--color-accent-peach`: `#F4C9A4`  \n- `--color-accent-blue`: `#1B3358`  \n- `--color-accent-red`: `#C8442E`  \n\n\n### Typography  \n#### Display / Headline Typeface  \n- Name: \"Means\" (custom, by Commercial Type)  \n- Description: Elegant serif with quirky warmth; rounded corners, editorial tone, light-weight by default.  \n- Usage: Light font-weight, large sizes; for H1/H2/hero headlines only (generous letter-spacing, never for long body copy).  \n- Free equivalents:  \n  - \"Fraunces\" (Google Fonts) — closest free equivalent (variable, rounded/soft serif quality).  \n  - \"Lora\" / \"Noto Serif\" — light weight as a safer fallback.  \n\n#### Body / UI Typeface  \n- Name: \"Graphik\"  \n- Description: Purposefully plain sans-serif; prioritizes legibility, balances display face expressiveness.  \n- Usage: Body copy, navigation, buttons, captions, data.  \n- Free equivalents: \"Inter\", \"Söhne\"-style, or \"Work Sans\" — clean, neutral, geometric-humanist sans.  \n\n\n### Spacing, Border Radius, Shadows, Badges, Inputs, Button Styles, Card Styles  \nNo explicit values provided in the visible content.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782285038,
+  "id": "20260624151020ee7ce155ee01400f",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "20260624151020ee7ce155ee01400f",
+  "usage": {
+    "completion_tokens": 385,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 2780,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 3165
+  }
+}

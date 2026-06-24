@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
@@ -12,14 +12,18 @@ import { MobileHeader } from "@/components/layout/mobile-header";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { Footer } from "@/components/layout/footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
+  display: "swap",
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -73,7 +77,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground min-h-screen flex flex-col`}
+        className={`${inter.variable} ${fraunces.variable} antialiased bg-background text-foreground min-h-screen flex flex-col`}
       >
         <ThemeProvider>
           <NextAuthProvider>

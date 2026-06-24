@@ -16,7 +16,7 @@ export function Footer() {
   const settings = useSettingsStore((s) => s.settings);
   const pathname = usePathname();
   // Hide footer on dashboard routes (they manage their own layout)
-  if (pathname.startsWith("/admin") || pathname.startsWith("/teacher") || pathname.startsWith("/login")) {
+  if (pathname.startsWith("/admin") || pathname.startsWith("/teacher") || pathname.startsWith("/login") || pathname.startsWith("/student-dashboard")) {
     return null;
   }
 

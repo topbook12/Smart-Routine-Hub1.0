@@ -163,3 +163,21 @@ export function useCurrentUser() {
     staleTime: 10_000,
   });
 }
+
+export interface StudentUser {
+  id: string;
+  fullName: string;
+  rollNumber: string;
+  program: "bsc" | "msc";
+  semester: number;
+  role: "student";
+  isActive: boolean;
+}
+
+export function useCurrentStudent() {
+  return useQuery<{ student: StudentUser | null }>({
+    queryKey: ["current-student"],
+    queryFn: () => fetcher<{ student: StudentUser | null }>("/api/student/me"),
+    staleTime: 10_000,
+  });
+}

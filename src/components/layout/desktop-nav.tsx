@@ -32,7 +32,7 @@ export function DesktopNav() {
   const user = userResp?.user;
 
   // Hide on dashboard / login routes (they provide their own chrome)
-  if (pathname.startsWith("/admin") || pathname.startsWith("/teacher") || pathname.startsWith("/login")) {
+  if (pathname.startsWith("/admin") || pathname.startsWith("/teacher") || pathname.startsWith("/login") || pathname.startsWith("/student-dashboard")) {
     return null;
   }
 

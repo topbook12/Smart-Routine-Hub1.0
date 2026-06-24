@@ -51,6 +51,29 @@ export const authOptions: NextAuthOptions = {
         return null;
       },
     }),
+    CredentialsProvider({
+      id: "student",
+      name: "Student Login",
+      credentials: {
+        rollNumber: { label: "Roll Number", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const roll = credentials?.rollNumber?.trim();
+        const password = credentials?.password ?? "";
+        if (!roll || !password) return null;
+        const student = await db.student.findUnique({ where: { rollNumber: roll } });
+        if (!student || !student.isActive) return null;
+        const ok = await bcrypt.compare(password, student.passwordHash);
+        if (!ok) return null;
+        return {
+          id: student.id,
+          email: `${student.rollNumber}@student.ice.ru.ac.bd`,
+          name: student.fullName,
+          role: "student",
+        };
+      },
+    }),
   ],
   session: { strategy: "jwt", maxAge: 60 * 60 * 24 * 7 },
   pages: { signIn: "/login" },

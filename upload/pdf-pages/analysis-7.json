@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "Here's a complete extraction of all visible design specs from the document:\n\n### Colors (hex)\n- primary: #FFE01B\n- ink: #241C15\n- background_cream: #EFEDE9\n- background_white: #FFFFFF\n- accent_green: #2D4F35\n- accent_peach: #F4C9A4\n- accent_blue: #1B3358\n- accent_red: #C8442E\n\n### Typography\n- display_font: \"Fraunces (light weight) – rounded, warm serif for headline\"\n- body_font: \"Inter – plain, legible sans-serif for everything else\"\n- rule: \"always pair one expressive serif display face with one plain sans-serif\"\n\n### Shape\n- corner_radius: \"8-16px on cards/buttons, soft not sharp, not full pill by default\"\n- background_default: \"warm cream, not pure white\"\n\n### Layout\n- rhythm: \"alternate full-bleed section backgrounds (cream / dark / cream / dark)\"\n- whitespace: \"generous; max body paragraph width ~635px\"\n\n### Components\n- primary_button: \"Peppercorn fill, cream text, 8-12px radius\"\n- secondary_button: \"Cavendish Yellow fill, Peppercorn text – OR outline style\"\n- links: \"text links with arrow for secondary actions, not always buttons\"\n\n### Imagery\n- style: \"hand-drawn, slightly imperfect illustration over stock photography\"\n\n### Motion\n- style: \"restrained – fade/slide-up on scroll, fast subtle hover states, no jarring transitions\"\n\n### Voice\n- style: \"active voice, plain verbs, sentence case, specific over clever, long-form content\"\n\n### Document Usage\n- instruction: \"Save this file in your project repo (e.g. /design/design-system.md)\"",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782285096,
+  "id": "20260624151124df69d24295dd46cd",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "20260624151124df69d24295dd46cd",
+  "usage": {
+    "completion_tokens": 394,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 2780,
+    "prompt_tokens_details": {
+      "cached_tokens": 59
+    },
+    "total_tokens": 3174
+  }
+}

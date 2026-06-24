@@ -34,7 +34,8 @@ export function MobileHeader() {
   if (
     pathname.startsWith("/admin") ||
     pathname.startsWith("/teacher") ||
-    pathname.startsWith("/login")
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/student-dashboard")
   ) {
     return null;
   }

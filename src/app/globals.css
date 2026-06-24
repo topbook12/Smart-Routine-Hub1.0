@@ -6,8 +6,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -37,110 +38,155 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  /* Brand tokens — Cavendish Yellow + Peppercorn + accents */
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-gold-deep: var(--gold-deep);
+  --color-green: var(--green);
+  --color-green-soft: var(--green-soft);
+  --color-green-light: var(--green-light);
+  --color-peach: var(--peach);
+  --color-peach-soft: var(--peach-soft);
+  --color-navy: var(--navy);
+  --color-rust: var(--rust);
+  /* Text category tokens */
+  --color-heading: var(--text-heading);
+  --color-body: var(--text-body);
+  --color-label: var(--text-label);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* ===== Smart Routine Hub Design System ===== */
+/* ===== Smart Routine Hub — Mailchimp-inspired Design System =====
+   Cavendish Yellow (#FFE01B) bold accent, Peppercorn (#241C15) warm ink,
+   cream canvas (#EFEDE9), white cards. Fraunces serif display headings,
+   Inter body. 8-16px radius. Restrained motion. Generous whitespace.
+*/
 :root {
-  --radius: 0.75rem;
+  --radius: 0.625rem;               /* 10px — moderate rounding per spec */
 
-  /* Light theme — Deep Teal primary */
-  --background: #FAFBFC;
-  --foreground: #0F172A;
-  --card: #FFFFFF;
-  --card-foreground: #0F172A;
+  /* Light theme — warm cream canvas */
+  --background: #EFEDE9;            /* cream canvas — warm, not pure white */
+  --foreground: #241C15;            /* Peppercorn ink — body text */
+  --card: #FFFFFF;                  /* white cards on cream */
+  --card-foreground: #241C15;
   --popover: #FFFFFF;
-  --popover-foreground: #0F172A;
+  --popover-foreground: #241C15;
 
-  --primary: #0D9488;          /* teal-600 */
-  --primary-foreground: #FFFFFF;
-  --secondary: #F1F5F9;
-  --secondary-foreground: #0F172A;
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
-  --accent: #ECFDF5;
-  --accent-foreground: #0F766E;
-  --destructive: #DC2626;
+  --primary: #241C15;               /* Peppercorn — primary buttons */
+  --primary-foreground: #EFEDE9;    /* cream text on dark */
+  --secondary: #F4F2EE;             /* subtle warm gray surface */
+  --secondary-foreground: #241C15;
+  --muted: #F4F2EE;
+  --muted-foreground: #6B6760;      /* warm medium gray */
+  --accent: #FFE01B;                /* Cavendish Yellow — bold accent */
+  --accent-foreground: #241C15;     /* Peppercorn text on yellow */
+  --destructive: #C8442E;           /* accent red */
   --destructive-foreground: #FFFFFF;
-  --border: #E2E8F0;
-  --input: #E2E8F0;
-  --ring: #14B8A6;
+  --border: #E5E1DA;                /* warm hairline border */
+  --input: #E5E1DA;
+  --ring: #241C15;
 
-  /* Brand colors */
-  --teal: #0D9488;
-  --teal-light: #14B8A6;
-  --teal-bright: #2DD4BF;
-  --amber: #F59E0B;
-  --amber-light: #FBBF24;
-  --emerald: #10B981;
-  --cyan: #06B6D4;
-  --orange: #F97316;
+  /* Text category tokens */
+  --text-heading: #241C15;          /* Peppercorn — headings */
+  --text-body: #3D332B;             /* warm dark brown-gray — body */
+  --text-label: #6B6760;            /* warm gray — labels/captions */
+  --text-muted: #9C968E;            /* warm light gray — de-emphasized */
 
-  --chart-1: #0D9488;
-  --chart-2: #F59E0B;
-  --chart-3: #06B6D4;
-  --chart-4: #10B981;
-  --chart-5: #F97316;
+  /* Brand tokens — Mailchimp palette */
+  --gold: #FFE01B;                  /* Cavendish Yellow — bold accent */
+  --gold-soft: #FFE94F;             /* lighter yellow hover */
+  --gold-deep: #E6C800;             /* deeper yellow */
+  --ink: #241C15;                   /* Peppercorn — warm near-black */
+  --ink-soft: #3D332B;              /* lighter peppercorn */
+  --green: #2D4F35;                 /* dark forest green accent */
+  --green-soft: #3A6B47;
+  --green-light: #4A7C58;
+  --peach: #F4C9A4;                 /* warm peach accent */
+  --peach-soft: #F8D8BC;
+  --navy: #1B3358;                  /* deep navy accent */
+  --rust: #C8442E;                  /* warm red accent */
+  --cream: #EFEDE9;                 /* warm cream */
+  --cream-soft: #F4F2EE;
+
+  --chart-1: #241C15;
+  --chart-2: #FFE01B;
+  --chart-3: #2D4F35;
+  --chart-4: #F4C9A4;
+  --chart-5: #1B3358;
 
   --sidebar: #FFFFFF;
-  --sidebar-foreground: #0F172A;
-  --sidebar-primary: #0D9488;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #ECFDF5;
-  --sidebar-accent-foreground: #0F766E;
-  --sidebar-border: #E2E8F0;
-  --sidebar-ring: #14B8A6;
+  --sidebar-foreground: #241C15;
+  --sidebar-primary: #241C15;
+  --sidebar-primary-foreground: #EFEDE9;
+  --sidebar-accent: #FFE01B;
+  --sidebar-accent-foreground: #241C15;
+  --sidebar-border: #E5E1DA;
+  --sidebar-ring: #241C15;
 
-  --shadow-color: 220 40% 30%;
+  --shadow-color: 36 28 21;
 }
 
 .dark {
-  --background: #0F172A;
-  --foreground: #F1F5F9;
-  --card: #1E293B;
-  --card-foreground: #F1F5F9;
-  --popover: #1E293B;
-  --popover-foreground: #F1F5F9;
+  --background: #1A1612;            /* warm near-black canvas */
+  --foreground: #EFEDE9;            /* cream text */
+  --card: #241C15;                  /* Peppercorn card */
+  --card-foreground: #EFEDE9;
+  --popover: #241C15;
+  --popover-foreground: #EFEDE9;
 
-  --primary: #2DD4BF;           /* teal-400 */
-  --primary-foreground: #042F2E;
-  --secondary: #334155;
-  --secondary-foreground: #F1F5F9;
-  --muted: #1E293B;
-  --muted-foreground: #94A3B8;
-  --accent: #134E4A;
-  --accent-foreground: #5EEAD4;
-  --destructive: #EF4444;
+  --primary: #EFEDE9;               /* cream primary on dark */
+  --primary-foreground: #241C15;
+  --secondary: #2D2620;
+  --secondary-foreground: #EFEDE9;
+  --muted: #2D2620;
+  --muted-foreground: #9C968E;
+  --accent: #FFE01B;                /* yellow stays bright */
+  --accent-foreground: #241C15;
+  --destructive: #E55A3F;
   --destructive-foreground: #FFFFFF;
-  --border: #334155;
-  --input: #334155;
-  --ring: #2DD4BF;
+  --border: #3D332B;
+  --input: #3D332B;
+  --ring: #FFE01B;
 
-  --teal: #2DD4BF;
-  --teal-light: #5EEAD4;
-  --teal-bright: #5EEAD4;
-  --amber: #FBBF24;
-  --amber-light: #FCD34D;
+  --text-heading: #EFEDE9;
+  --text-body: #D4CFC8;
+  --text-label: #9C968E;
+  --text-muted: #6B6760;
 
-  --chart-1: #2DD4BF;
-  --chart-2: #FBBF24;
-  --chart-3: #22D3EE;
-  --chart-4: #34D399;
-  --chart-5: #FB923C;
+  --gold: #FFE01B;
+  --gold-soft: #FFE94F;
+  --gold-deep: #E6C800;
+  --ink: #EFEDE9;
+  --ink-soft: #D4CFC8;
+  --green: #4A7C58;
+  --green-soft: #5A8C68;
+  --green-light: #6A9C78;
+  --peach: #F4C9A4;
+  --peach-soft: #F8D8BC;
+  --navy: #3B5578;
+  --rust: #E55A3F;
+  --cream: #1A1612;
+  --cream-soft: #241C15;
 
-  --sidebar: #0B1220;
-  --sidebar-foreground: #F1F5F9;
-  --sidebar-primary: #2DD4BF;
-  --sidebar-primary-foreground: #042F2E;
-  --sidebar-accent: #134E4A;
-  --sidebar-accent-foreground: #5EEAD4;
-  --sidebar-border: #1E293B;
-  --sidebar-ring: #2DD4BF;
+  --chart-1: #EFEDE9;
+  --chart-2: #FFE01B;
+  --chart-3: #6A9C78;
+  --chart-4: #F4C9A4;
+  --chart-5: #3B5578;
 
-  --shadow-color: 220 60% 2%;
+  --sidebar: #1A1612;
+  --sidebar-foreground: #EFEDE9;
+  --sidebar-primary: #FFE01B;
+  --sidebar-primary-foreground: #241C15;
+  --sidebar-accent: #2D2620;
+  --sidebar-accent-foreground: #FFE01B;
+  --sidebar-border: #2D2620;
+  --sidebar-ring: #FFE01B;
 }
 
 @layer base {
@@ -149,13 +195,52 @@
   }
   html {
     -webkit-tap-highlight-color: transparent;
+    font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    color: var(--text-body);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    line-height: 1.6;
+  }
+  /* Display headings — Fraunces serif, light weight, generous spacing */
+  h1, h2, h3 {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    color: var(--text-heading);
+  }
+  h4, h5, h6 {
+    font-family: var(--font-inter), sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    color: var(--text-heading);
+  }
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: var(--text-heading);
+  }
+  strong, b {
+    color: var(--text-heading);
+    font-weight: 600;
+  }
+  label {
+    color: var(--text-label);
+    font-weight: 500;
+  }
+  p {
+    line-height: 1.6;
+  }
+  /* Max body paragraph width for readability (~635px per spec) */
+  p, .prose-body {
+    max-width: 40rem;
   }
   ::selection {
-    background: color-mix(in srgb, var(--primary) 30%, transparent);
+    background: var(--gold);
+    color: var(--ink);
   }
 }
 
@@ -168,35 +253,33 @@
   background: transparent;
 }
 .scrollbar-premium::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--primary) 40%, transparent);
+  background: var(--border);
   border-radius: 9999px;
 }
 .scrollbar-premium::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--primary) 60%, transparent);
+  background: var(--text-muted);
 }
 
-/* ===== Premium 3D Card ===== */
+/* ===== Card — white on cream, soft shadow, generous padding, 10px radius ===== */
 .card-3d {
   position: relative;
   background: var(--card);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
+  border-radius: 10px;
+  border: none;
   box-shadow:
-    0 1px 2px hsl(var(--shadow-color) / 0.08),
-    0 4px 12px hsl(var(--shadow-color) / 0.06),
-    0 12px 24px hsl(var(--shadow-color) / 0.04);
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    0 1px 2px rgba(36, 28, 21, 0.04),
+    0 4px 12px rgba(36, 28, 21, 0.05);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .card-3d:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px) scale(1.01);
   box-shadow:
-    0 4px 8px hsl(var(--shadow-color) / 0.10),
-    0 12px 28px hsl(var(--shadow-color) / 0.12),
-    0 24px 48px hsl(var(--shadow-color) / 0.10);
+    0 4px 8px rgba(36, 28, 21, 0.06),
+    0 12px 28px rgba(36, 28, 21, 0.08);
 }
 
-/* Inner glow overlay */
+/* Inner glow overlay — subtle yellow tint on hover */
 .card-inner-glow {
   position: relative;
   overflow: hidden;
@@ -205,81 +288,115 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    120% 120% at 0% 0%,
-    color-mix(in srgb, var(--primary) 18%, transparent) 0%,
-    transparent 45%
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--gold) 6%, transparent) 0%,
+    transparent 50%
   );
-  opacity: 0.6;
+  opacity: 0;
   pointer-events: none;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.22s ease;
 }
 .card-inner-glow:hover::before {
   opacity: 1;
 }
 
-/* ===== Glassmorphism ===== */
+/* ===== Glassmorphism — minimal frosted, warm tint ===== */
 .glass {
-  background: color-mix(in srgb, var(--card) 70%, transparent);
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-  border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  background: color-mix(in srgb, var(--card) 82%, transparent);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  border-bottom: 1px solid var(--border);
 }
 .glass-premium {
-  background: color-mix(in srgb, var(--card) 55%, transparent);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
-  box-shadow:
-    0 8px 32px hsl(var(--shadow-color) / 0.12),
-    inset 0 1px 0 color-mix(in srgb, white 15%, transparent);
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 color-mix(in srgb, white 15%, transparent) inset;
 }
 
-/* ===== Gradient text ===== */
+/* ===== Gradient text — Peppercorn ink + warm tones ===== */
 .text-gradient-primary {
-  background: linear-gradient(120deg, var(--teal), var(--teal-bright) 40%, var(--cyan));
+  background: linear-gradient(120deg, var(--ink) 0%, #4A3F36 60%, var(--ink) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 .text-gradient-amber {
-  background: linear-gradient(120deg, var(--amber), var(--orange));
+  background: linear-gradient(120deg, var(--gold-deep), var(--gold));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 .text-gradient-hero {
-  background: linear-gradient(120deg, var(--teal) 0%, var(--teal-bright) 35%, var(--amber) 100%);
+  background: linear-gradient(120deg, var(--ink) 0%, #5A4A3D 45%, var(--gold-deep) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-/* ===== 3D buttons ===== */
+/* ===== Buttons — Peppercorn primary, Yellow secondary, 150-250ms hover ===== */
 .btn-3d {
   position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   box-shadow:
-    0 1px 0 color-mix(in srgb, white 25%, transparent) inset,
-    0 -2px 0 color-mix(in srgb, black 18%, transparent) inset,
-    0 4px 14px hsl(var(--shadow-color) / 0.20);
+    0 1px 0 color-mix(in srgb, white 10%, transparent) inset,
+    0 -1px 0 color-mix(in srgb, black 12%, transparent) inset,
+    0 2px 6px rgba(36, 28, 21, 0.10);
+  font-weight: 500;
+  letter-spacing: 0;
+  border-radius: 10px;
 }
 .btn-3d:hover {
-  transform: translateY(-1px);
+  transform: translateY(-1px) scale(1.02);
   box-shadow:
-    0 1px 0 color-mix(in srgb, white 25%, transparent) inset,
-    0 -2px 0 color-mix(in srgb, black 18%, transparent) inset,
-    0 6px 20px hsl(var(--shadow-color) / 0.28);
+    0 1px 0 color-mix(in srgb, white 10%, transparent) inset,
+    0 -1px 0 color-mix(in srgb, black 12%, transparent) inset,
+    0 4px 12px rgba(36, 28, 21, 0.16);
 }
 .btn-3d:active {
-  transform: translateY(1px);
+  transform: translateY(0) scale(1);
   box-shadow:
-    0 1px 0 color-mix(in srgb, white 20%, transparent) inset,
-    0 -1px 0 color-mix(in srgb, black 18%, transparent) inset,
-    0 2px 8px hsl(var(--shadow-color) / 0.20);
+    0 1px 0 color-mix(in srgb, white 8%, transparent) inset,
+    0 2px 4px rgba(36, 28, 21, 0.08);
 }
 
-/* ===== Stat card premium with corner glow ===== */
+/* Peppercorn primary button */
+.btn-ink {
+  background: var(--ink);
+  color: #EFEDE9;
+}
+.btn-ink:hover {
+  background: #3D332B;
+}
+.dark .btn-ink {
+  background: var(--ink);
+  color: #241C15;
+}
+.dark .btn-ink:hover {
+  background: #D4CFC8;
+}
+
+/* Cavendish Yellow secondary button */
+.btn-gold {
+  background: var(--gold);
+  color: var(--ink);
+}
+.btn-gold:hover {
+  background: var(--gold-deep);
+}
+
+/* Green secondary button */
+.btn-green {
+  background: var(--green);
+  color: #FFFFFF;
+}
+.btn-green:hover {
+  background: var(--green-soft);
+}
+
+/* ===== Stat card — subtle yellow corner glow ===== */
 .stat-card-premium {
   position: relative;
   overflow: hidden;
@@ -287,29 +404,28 @@
 .stat-card-premium::after {
   content: "";
   position: absolute;
-  top: -40%;
-  right: -30%;
-  width: 60%;
-  height: 80%;
+  top: -30%;
+  right: -20%;
+  width: 50%;
+  height: 70%;
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--primary) 30%, transparent) 0%,
+    color-mix(in srgb, var(--gold) 16%, transparent) 0%,
     transparent 70%
   );
   pointer-events: none;
-  filter: blur(20px);
+  filter: blur(28px);
 }
 
-/* ===== Hero background ===== */
+/* ===== Hero background — bold yellow field, quiet elsewhere ===== */
 .hero-bg {
   position: relative;
   background:
-    radial-gradient(60% 50% at 50% 0%, color-mix(in srgb, var(--teal) 18%, transparent), transparent 70%),
-    radial-gradient(40% 40% at 90% 20%, color-mix(in srgb, var(--amber) 14%, transparent), transparent 70%),
-    radial-gradient(40% 40% at 10% 30%, color-mix(in srgb, var(--cyan) 12%, transparent), transparent 70%);
+    radial-gradient(50% 45% at 50% 0%, color-mix(in srgb, var(--gold) 14%, transparent), transparent 70%),
+    radial-gradient(30% 30% at 90% 20%, color-mix(in srgb, var(--gold) 8%, transparent), transparent 70%);
 }
 
-/* Decorative corner glow */
+/* Decorative corner glow — yellow */
 .corner-glow {
   position: relative;
 }
@@ -318,22 +434,21 @@
   position: absolute;
   top: -60px;
   right: -60px;
-  width: 220px;
-  height: 220px;
-  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 35%, transparent), transparent 70%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--gold) 26%, transparent), transparent 70%);
   filter: blur(40px);
   pointer-events: none;
   z-index: 0;
 }
 
-/* ===== Badge glow ===== */
+/* ===== Badge glow — yellow pulse ===== */
 .badge-glow {
-  box-shadow: 0 0 0 0 currentColor;
   animation: badge-pulse 2.4s ease-in-out infinite;
 }
 @keyframes badge-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 35%, transparent); }
-  50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--primary) 0%, transparent); }
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 40%, transparent); }
+  50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--gold) 0%, transparent); }
 }
 
 /* ===== Gradient borders ===== */
@@ -341,30 +456,66 @@
   border: 1px solid transparent;
   background:
     linear-gradient(var(--card), var(--card)) padding-box,
-    linear-gradient(135deg, var(--teal), var(--teal-bright), var(--cyan)) border-box;
+    linear-gradient(135deg, var(--ink), #4A3F36, var(--ink)) border-box;
 }
 .border-gradient-amber {
   border: 1px solid transparent;
   background:
     linear-gradient(var(--card), var(--card)) padding-box,
-    linear-gradient(135deg, var(--amber), var(--orange)) border-box;
+    linear-gradient(135deg, var(--gold), var(--gold-deep)) border-box;
 }
 
-/* ===== Colored shadows ===== */
-.shadow-teal-glow { box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--teal) 55%, transparent); }
-.shadow-amber-glow { box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--amber) 55%, transparent); }
-.shadow-emerald-glow { box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--emerald) 55%, transparent); }
-.shadow-cyan-glow { box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--cyan) 55%, transparent); }
+/* ===== Colored shadows — warm, soft ===== */
+.shadow-teal-glow { box-shadow: 0 4px 16px -4px rgba(36, 28, 21, 0.12); }
+.shadow-amber-glow { box-shadow: 0 4px 16px -4px color-mix(in srgb, var(--gold) 42%, transparent); }
+.shadow-emerald-glow { box-shadow: 0 4px 16px -4px color-mix(in srgb, var(--green) 38%, transparent); }
+.shadow-cyan-glow { box-shadow: 0 4px 16px -4px rgba(36, 28, 21, 0.12); }
 
-/* Theory / Lab gradient backgrounds */
+/* Theory / Lab class backgrounds — Peppercorn vs Cavendish Yellow */
 .bg-theory {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--teal) 92%, black), color-mix(in srgb, var(--teal-bright) 85%, black));
+  background: var(--ink);
 }
 .bg-lab {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--amber) 92%, black), color-mix(in srgb, var(--orange) 88%, black));
+  background: var(--gold);
 }
 
-/* ===== Animations ===== */
+/* Theory badge — Peppercorn bg cream text; Lab badge — Yellow bg ink text */
+.badge-theory {
+  background: var(--ink);
+  color: #EFEDE9;
+}
+.dark .badge-theory {
+  background: var(--ink-soft);
+  color: #241C15;
+}
+.badge-lab {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+/* Badge utilities */
+.badge-gold {
+  background: var(--gold);
+  color: var(--ink);
+}
+.badge-green {
+  background: var(--green);
+  color: #FFFFFF;
+}
+.badge-ink {
+  background: var(--ink);
+  color: #EFEDE9;
+}
+.badge-peach {
+  background: var(--peach);
+  color: var(--ink);
+}
+.badge-navy {
+  background: var(--navy);
+  color: #FFFFFF;
+}
+
+/* ===== Animations — restrained, 150-250ms, fade/slide-up ===== */
 @keyframes float-subtle {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
@@ -385,7 +536,7 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    color-mix(in srgb, var(--primary) 18%, transparent) 50%,
+    color-mix(in srgb, var(--gold) 20%, transparent) 50%,
     transparent 100%
   );
   background-size: 200% 100%;
@@ -393,21 +544,21 @@
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.animate-fade-up { animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-up { animation: fade-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
 @keyframes scale-in {
-  from { opacity: 0; transform: scale(0.96); }
+  from { opacity: 0; transform: scale(0.97); }
   to { opacity: 1; transform: scale(1); }
 }
-.animate-scale-in { animation: scale-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-scale-in { animation: scale-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
 @keyframes blob-float {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -20px) scale(1.08); }
-  66% { transform: translate(-20px, 20px) scale(0.95); }
+  33% { transform: translate(30px, -20px) scale(1.06); }
+  66% { transform: translate(-20px, 20px) scale(0.96); }
 }
 .animate-blob { animation: blob-float 18s ease-in-out infinite; }
 
@@ -423,3 +574,8 @@
 /* Safe area padding for mobile */
 .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
 .pt-safe { padding-top: env(safe-area-inset-top); }
+
+/* Display heading utility — apply Fraunces serif */
+.font-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+}

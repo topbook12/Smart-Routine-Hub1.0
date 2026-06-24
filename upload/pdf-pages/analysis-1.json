@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "### Design System Reference — \"Mailchimp-Inspired\" Style Guide  \n**Purpose**: Portable design-system reference for Mailchimp’s brand identity (colors, typography, spacing, voice, motion) to replicate visual direction in AI coding projects.  \n\n\n### 1. Brand Personality  \n- **Tone words**: friendly, confident, a little cheeky, optimistic, editorial (not salesy), human.  \n- **Visual strategy**: Loud in one place (color), quiet everywhere else (layout, grid, restraint). One bold accent color used with confidence—large color fields, high contrast (no gradients/multiple competing brights).  \n- **Anti-pattern to avoid**: Generic SaaS-blue, glassmorphism, stock-photo corporate look.  \n\n\n### 2. Color Palette  \n#### Primary (hero) colors  \n| Token               | Name          | Hex       | RGB       | Usage                                                                 |  \n|---------------------|---------------|-----------|-----------|-----------------------------------------------------------------------|  \n| `--color-brand-primary` | Cavendish Yellow | `#FFE01B` | 255, 224, 27 | Hero color. CTAs, highlights, backgrounds for emphasis blocks, hover states. Used boldly in large fields—*not* as a small accent. |  \n| `--color-ink`        | Peppercorn     | `#241C15` | 36, 28, 21 | Primary text, dark backgrounds, button text/fills. A warm near-black (softer than pure `#000`). |  \n\n\n### Notes on Visible Specs (from Page 1)  \n- **Colors**: Only two primary colors are listed with hex values (`#FFE01B`, `#241C15`).  \n- **Typography**: No font family, sizes, or weights are visible on this page.  \n- **Spacing**: No spacing values (e.g., padding, margins) are visible.  \n- **Border Radius**: No border radius values are visible.  \n- **Button Styles**: No button styles (e.g., padding, hover states) are visible.  \n- **Card Styles**: No card styles (e.g., padding, shadows) are visible.  \n- **Shadows**: No shadow values are visible.  \n\n\nAll visible design specs from Page 1 are extracted above.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782284984,
+  "id": "20260624150929edf5e6aafc5649ca",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "20260624150929edf5e6aafc5649ca",
+  "usage": {
+    "completion_tokens": 473,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 2781,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 3254
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "Based on the provided image, there are no visible design specifications (colors, typography, spacing, etc.) to extract. The page contains only text instructions about using the design system with AI coding agents and a disclaimer about not copying Mailchimp's trademarked assets. The actual design specifications would likely be in the referenced \"Section 9's JSON block\" mentioned in point 3, but that content is not visible in this image.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782285101,
+  "id": "2026062415113624fb687307b74b92",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "2026062415113624fb687307b74b92",
+  "usage": {
+    "completion_tokens": 89,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 2780,
+    "prompt_tokens_details": {
+      "cached_tokens": 59
+    },
+    "total_tokens": 2869
+  }
+}

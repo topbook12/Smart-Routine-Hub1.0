@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "### Colors (Hex)  \n- `--color-bg-cream`: `#EFEDE9`  \n- `--color-bg-white`: `#FFFFFF`  \n- `--color-accent-green`: `#2D4F35`  \n- `--color-accent-peach`: `#F4C9A4`  \n- `--color-accent-blue`: `#1B3358`  \n- `--color-accent-red`: `#C8442E`  \n\n\n### Typography (Font Family, Sizes, Weights)  \n- **Font Family**: Implied (not explicitly listed, but \"Peppercorn\" and \"Cavendish Yellow\" are referenced as text colors for contrast).  \n- **Text Colors**:  \n  - \"Peppercorn\" (used for text on light backgrounds, e.g., with yellow accents).  \n  - \"Cavendish Yellow\" (used for text on cream/white backgrounds, e.g., primary CTA buttons).  \n\n\n### Spacing  \n- **Button/CTA Usage**: ~10-20% of a page (e.g., hero band, one CTA block, highlight card).  \n- **Accent Color Usage**: One secondary accent color per section (no combining green + peach + blue on the same screen).  \n\n\n### Border Radius  \n- Not explicitly listed.  \n\n\n### Button Styles  \n- **Primary CTA**:  \n  - Pattern 1: Peppercorn fill with cream/white text.  \n  - Pattern 2: Cavendish Yellow fill with Peppercorn text.  \n\n\n### Card Styles  \n- **Backgrounds**: Card backgrounds use `--color-bg-white` (contrast surfaces on top of cream).  \n- **Highlight Cards**: Used as part of the ~10-20% yellow accent usage (e.g., hero band, CTA block).  \n\n\n### Shadows  \n- Not explicitly listed.  \n\n\n### Badges  \n- Not explicitly listed.  \n\n\n### Inputs  \n- Not explicitly listed.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782285003,
+  "id": "2026062415095454a5b9ec649d4357",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "2026062415095454a5b9ec649d4357",
+  "usage": {
+    "completion_tokens": 417,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 2780,
+    "prompt_tokens_details": {
+      "cached_tokens": 7
+    },
+    "total_tokens": 3197
+  }
+}

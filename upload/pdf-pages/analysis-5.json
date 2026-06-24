@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "### Colors  \n- `#241C15` (Peppercorn)  \n- Cream (background)  \n- White (text, card surface)  \n- Cavendish Yellow (secondary CTA fill)  \n- Dark Peppercorn (alternate section background)  \n- Yellow (highlight, hover color)  \n\n\n### Typography  \n- **Font Family**: Peppercorn (primary), implied for text elements (e.g., navigation, buttons)  \n- **Weights**: Medium (button labels)  \n- **Sizes**: Not explicitly defined, but implied for headings/descriptions in cards  \n\n\n### Spacing  \n- Internal padding (cards): 24–40px  \n- Horizontal padding (primary CTA buttons): Generous (implied, no exact value)  \n- Label spacing (forms): Plenty (implied, no exact value)  \n- Section rhythm: Alternating backgrounds (cream → dark Peppercorn → cream → yellow highlight → cream)  \n\n\n### Border Radius  \n- Rounded corners (primary CTA buttons): ~8–12px  \n- Rounded input fields (forms): Simple (implied, no exact value)  \n\n\n### Button Styles  \n- **Primary CTA**:  \n  - Fill: Peppercorn (`#241C15`)  \n  - Text: Cream/white  \n  - Corners: ~8–12px rounded  \n  - Weight: Medium  \n  - Padding: Generous horizontal  \n- **Secondary CTA**:  \n  - Styles: Outlined or Cavendish Yellow fill  \n  - Text: Peppercorn  \n- **Hover**: Subtle scale or color-shift (yellow ↔ darker yellow, or fill ↔ outline)  \n\n\n### Card Styles  \n- Surface: White  \n- Background: Cream  \n- Features: Soft shadow or simple border, generous internal padding (24–40px)  \n- Content: Short headline + one-line description + text link (optional, arrows for secondary actions)  \n\n\n### Shadows  \n- Soft shadow (cards)  \n\n\n### Badges  \n- Not explicitly defined  \n\n\n### Inputs  \n- Style: Simple, rounded fields  \n- Label spacing: Plenty  \n- Micro-copy tone: Friendly (e.g., \"Hi, let's get started\" vs. \"Submit Form\")",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782285060,
+  "id": "2026062415104471a1d5e94e784789",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "2026062415104471a1d5e94e784789",
+  "usage": {
+    "completion_tokens": 463,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 2780,
+    "prompt_tokens_details": {
+      "cached_tokens": 7
+    },
+    "total_tokens": 3243
+  }
+}

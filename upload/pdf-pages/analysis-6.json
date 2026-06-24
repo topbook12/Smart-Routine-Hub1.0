@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "Based on the provided design system reference document page, here are all the extractable design specifications:\n\n### Colors\n- Secondary accent palette: peach, green, blue, red\n- Background: cream/white\n\n### Typography\n- No specific font family or sizes mentioned in this section\n\n### Spacing\n- Hover state duration: 150-250ms\n- Hover scale: 1.02-1.05x\n\n### Motion & Effects\n- Scroll-based reveals: simple fade/slide-up on section entry\n- Hover states: color shift, slight scale (1.02-1.05x), or underline animation on links\n- Motion style: restrained, not flashy\n- Motion purpose: add warmth (wink, subtle illustration loop) rather than to impress\n\n### Imagery & Illustration Style\n- Illustration style: hand-drawn, off-kilter, slightly imperfect\n- Illustration palette: brand's secondary accent colors against cream/white\n- Mascot/character: simple, single-color/silhouette-friendly, consistently paired with wordmark\n- Photography style: warm, candid, real-people-in-real-small-business-settings (not overly polished stock photography)\n- Icon style: simple line or solid single-color icons (not skeuomorphic or heavily detailed)\n\n### Voice & Microcopy\n- Voice: active voice, plain verbs, sentence case\n- Button copy examples: \"Start Free Trial,\" \"See Pricing,\" \"Learn More\"\n- Avoid vague button copy: \"Submit,\" \"Click Here\"\n- Headline structure: confident statement + softening, witty second clause\n- Empty/error states: explained plainly in product's voice (never apologetic or robotic)\n\n### Avoided Elements\n- Parallax-heavy effects\n- 3D tilts\n- Glassmorphism blur\n- Heavy gradients\n- Neon glows\n\nNote: This page doesn't contain specific values for border radius, button styles, card styles, shadows, badges, or inputs - those specifications would likely be in other sections of the design system document.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782285083,
+  "id": "2026062415110793a2427a576844af",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "2026062415110793a2427a576844af",
+  "usage": {
+    "completion_tokens": 420,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 2780,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 3200
+  }
+}

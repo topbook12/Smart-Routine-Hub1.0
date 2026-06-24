@@ -32,7 +32,7 @@ export function MobileBottomNav() {
   const { data: notices } = useRealtimeNotices({ limit: 30 });
 
   // Hide on admin/teacher pages
-  if (pathname.startsWith("/admin") || pathname.startsWith("/teacher") || pathname.startsWith("/login")) {
+  if (pathname.startsWith("/admin") || pathname.startsWith("/teacher") || pathname.startsWith("/login") || pathname.startsWith("/student-dashboard")) {
     return null;
   }
 

@@ -166,3 +166,15 @@ model Setting {
   key   String @unique
   value String
 }
+
+model Student {
+  id           String   @id @default(cuid())
+  fullName     String
+  rollNumber   String   @unique
+  program      String   @default("bsc")
+  semester     Int      @default(1)
+  passwordHash String
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

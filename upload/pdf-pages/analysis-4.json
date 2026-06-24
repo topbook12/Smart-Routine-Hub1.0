@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "### Extracted Design Specs:  \n\n#### 1. Colors  \n- Background: `#EFEDE9` (warm cream)  \n\n\n#### 2. Typography  \n- **Font Display**: `Fraunces`, Georgia, serif (headline/hero)  \n- **Font Body**: `Inter`, \"Helvetica Neue\", Arial, sans-serif (body/UI)  \n\n- **Type Scale (Desktop)**:  \n  | Role          | Font       | Weight          | Size (desktop) | Notes                                  |  \n  |---------------|------------|-----------------|----------------|----------------------------------------|  \n  | Hero H1       | Display    | Light (300)      | 56-80px        | Editorial, can wrap to 2-3 lines        |  \n  | H2            | Display    | Light/Regular    | 36-44px        |                                        |  \n  | H3            | Display or Body | Regular/Medium | 24-28px        |                                        |  \n  | Body          | Body       | Regular (400)    | 16-18px        | Max paragraph width ~635px for readability |  \n  | Caption/label | Body       | Medium (500)     | 13-14px        |                                        |  \n  | Button text   | Body       | Medium/Semibold  | 15-16px        |                                        |  \n\n\n#### 3. Spacing  \n- Grid: Generous whitespace, clear vertical rhythm. Sections use large, full-bleed color blocks alternating with cream.  \n\n\n#### 4. Border Radius  \n- Buttons/Cards: Moderate rounding (8-16px) (not full pill shapes, not sharp corners).  \n- Logo/Illustration elements: Fully rounded or organic blob shapes for warmth.  \n\n\n#### 5. Button Styles  \n- Font: `Body`  \n- Weight: `Medium/Semibold`  \n- Size: `15-16px` (desktop)  \n\n\n#### 6. Card Styles  \n- Corner radius: Moderate rounding (8-16px) (not full pill shapes, not sharp corners).  \n\n\n#### 7. Shadows  \n- Not explicitly defined in the visible content.  \n\n\n#### 8. Badges  \n- Not explicitly defined in the visible content.  \n\n\n#### 9. Additional Rules  \n- Headlines: Conversational, longer than typical SaaS copy (e.g., \"Email & SMS marketing, minus the learning curve\") — not just a noun phrase.  \n- Body copy: Plain and functional.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782284983,
+  "id": "20260624150929993ebff5fc4948cf",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "20260624150929993ebff5fc4948cf",
+  "usage": {
+    "completion_tokens": 518,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 2769,
+    "prompt_tokens_details": {
+      "cached_tokens": 6
+    },
+    "total_tokens": 3287
+  }
+}

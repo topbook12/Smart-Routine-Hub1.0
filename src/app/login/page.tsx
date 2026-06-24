@@ -10,6 +10,7 @@ import {
   Delete,
   Eye,
   EyeOff,
+  GraduationCap,
   Loader2,
   Lock,
   Mail,
@@ -26,7 +27,7 @@ import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-type Mode = "email" | "pin";
+type Mode = "email" | "pin" | "student";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -38,7 +39,9 @@ export default function LoginPage() {
   useEffect(() => {
     if (status === "authenticated" && session?.user) {
       const role = (session.user as { role?: string }).role;
-      router.replace(role === "admin" ? "/admin" : "/teacher");
+      if (role === "admin") router.replace("/admin");
+      else if (role === "student") router.replace("/student-dashboard");
+      else router.replace("/teacher");
     }
   }, [status, session, router]);
 
@@ -89,8 +92,8 @@ export default function LoginPage() {
           className="glass-premium rounded-2xl p-6 sm:p-7 shadow-2xl"
         >
           {/* Mode toggle */}
-          <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-muted/60 mb-6">
-            {(["email", "pin"] as Mode[]).map((m) => (
+          <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-muted/60 mb-6">
+            {(["email", "pin", "student"] as Mode[]).map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
@@ -102,13 +105,13 @@ export default function LoginPage() {
                 {mode === m && (
                   <motion.span
                     layoutId="login-mode"
-                    className="absolute inset-0 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 shadow-teal-glow"
+                    className="absolute inset-0 rounded-lg bg-ink shadow-teal-glow"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
-                <span className="relative z-10 flex items-center gap-1.5">
-                  {m === "email" ? <Mail className="h-3.5 w-3.5" /> : <KeyRound className="h-3.5 w-3.5" />}
-                  {m === "email" ? "Email Login" : "PIN Login"}
+                <span className="relative z-10 flex items-center gap-1">
+                  {m === "email" ? <Mail className="h-3.5 w-3.5" /> : m === "pin" ? <KeyRound className="h-3.5 w-3.5" /> : <GraduationCap className="h-3.5 w-3.5" />}
+                  <span className="hidden sm:inline">{m === "email" ? "Email" : m === "pin" ? "PIN" : "Student"}</span>
                 </span>
               </button>
             ))}
@@ -117,8 +120,10 @@ export default function LoginPage() {
           <AnimatePresence mode="wait">
             {mode === "email" ? (
               <EmailForm key="email" />
-            ) : (
+            ) : mode === "pin" ? (
               <PinForm key="pin" />
+            ) : (
+              <StudentForm key="student" />
             )}
           </AnimatePresence>
         </motion.div>
@@ -135,6 +140,8 @@ export default function LoginPage() {
           </p>
           <p>Admin → <code className="text-primary">admin@ice.ru.ac.bd</code> / <code className="text-primary">admin123</code></p>
           <p>Teacher → <code className="text-primary">mrh@ice.ru.ac.bd</code> / <code className="text-primary">teacher123</code></p>
+          <p>Student → roll <code className="text-primary">30001</code> / <code className="text-primary">student123</code> (BSc Sem 1)</p>
+          <p>Student → roll <code className="text-primary">28001</code> / <code className="text-primary">student123</code> (BSc Sem 3)</p>
           <p className="mt-1">PIN → any teacher&apos;s 6-digit PIN (e.g. <code className="text-primary">000000</code> for admin)</p>
         </motion.div>
       </div>
@@ -379,5 +386,106 @@ function PinForm() {
         })}
       </div>
     </motion.div>
+  );
+}
+
+function StudentForm() {
+  const router = useRouter();
+  const [rollNumber, setRollNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    const res = await signIn("student", {
+      rollNumber,
+      password,
+      redirect: false,
+    });
+    setLoading(false);
+    if (res?.error) {
+      setError("Invalid roll number or password. Please try again.");
+      return;
+    }
+    toast.success("Logged in as student");
+    router.replace("/student-dashboard");
+  };
+
+  return (
+    <motion.form
+      initial={{ opacity: 0, x: 10 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -10 }}
+      onSubmit={onSubmit}
+      className="space-y-4"
+    >
+      <div>
+        <Label htmlFor="roll" className="text-xs">Roll Number</Label>
+        <div className="relative mt-1.5">
+          <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            id="roll"
+            type="text"
+            required
+            value={rollNumber}
+            onChange={(e) => setRollNumber(e.target.value)}
+            placeholder="e.g. 30001"
+            className="pl-9 h-11"
+            autoComplete="username"
+          />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="spass" className="text-xs">Password</Label>
+        <div className="relative mt-1.5">
+          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            id="spass"
+            type={showPass ? "text" : "password"}
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            className="pl-9 pr-10 h-11"
+            autoComplete="current-password"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPass((v) => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </div>
+      </div>
+
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-start gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/30 text-xs text-destructive"
+        >
+          <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+          <span>{error}</span>
+        </motion.div>
+      )}
+
+      <Button
+        type="submit"
+        disabled={loading}
+        className="w-full h-11 btn-3d btn-gold gap-1.5"
+      >
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GraduationCap className="h-4 w-4" />}
+        {loading ? "Signing in…" : "Student Sign In"}
+      </Button>
+      <p className="text-[11px] text-center text-muted-foreground">
+        Students see only their own semester schedule and notices.
+      </p>
+    </motion.form>
   );
 }

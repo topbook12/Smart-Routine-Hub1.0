@@ -131,17 +131,23 @@ export function HomeView() {
             <div className="flex flex-wrap items-center justify-center gap-2.5 mb-6">
               {user ? (
                 <Link href={user.role === "admin" ? "/admin" : "/teacher"}>
-                  <Button className="btn-3d bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white gap-1.5 h-11 px-5">
+                  <Button className="btn-3d btn-ink gap-1.5 h-11 px-5">
                     <Sparkles className="h-4 w-4" /> Go to Dashboard
                   </Button>
                 </Link>
               ) : (
                 <Link href="/login">
-                  <Button className="btn-3d bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white gap-1.5 h-11 px-5">
+                  <Button className="btn-3d btn-ink gap-1.5 h-11 px-5">
                     <LogIn className="h-4 w-4" /> Teacher / Admin Login
                   </Button>
                 </Link>
               )}
+
+              <Link href="/login">
+                <Button variant="outline" className="btn-3d btn-gold gap-1.5 h-11 px-5 border-0">
+                  <GraduationCap className="h-4 w-4" /> Student Login
+                </Button>
+              </Link>
 
               {installPromptAvailable && (
                 <Button
