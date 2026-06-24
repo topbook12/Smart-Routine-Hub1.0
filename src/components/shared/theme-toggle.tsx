@@ -3,19 +3,20 @@
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export function ThemeToggle({ className }: { className?: string }) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   // next-themes requires a mounted gate to avoid hydration mismatch.
-  // We initialise via useState lazy initializer + a microtask set instead of useEffect.
+  // This is the canonical pattern documented by next-themes. The lint rule
+  // react-hooks/set-state-in-effect is a false positive here: the effect has
+  // an empty dependency array and runs once on mount purely to flip a flag,
+  // it does not cascade.
   const [mounted, setMounted] = useState(false);
-
-  // Use queueMicrotask to set mounted after first paint (avoids set-state-in-effect lint)
-  if (!mounted && typeof window !== "undefined") {
-    queueMicrotask(() => setMounted(true));
-  }
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const current = mounted ? (theme === "system" ? resolvedTheme : theme) : "light";
   const isDark = current === "dark";
