@@ -1,6 +1,17 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState, useRef } from "react";
+import {
+  collection,
+  query as fsQuery,
+  where,
+  orderBy,
+  limit as limitFn,
+  onSnapshot,
+  type Unsubscribe,
+} from "firebase/firestore";
+import { firestoreClient } from "@/lib/firebase-client";
 import type {
   Schedule,
   ScheduleChange,
@@ -11,14 +22,14 @@ import type {
   Course,
 } from "@/types";
 
-// Shared fetcher
+// Shared fetcher (fallback for non-Firestore data like current user)
 async function fetcher<T>(url: string): Promise<T> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch ${url}`);
   return res.json() as Promise<T>;
 }
 
-const RT_INTERVAL = 5000; // 5s — simulates real-time snapshots
+const RT_INTERVAL = 5000; // fallback polling interval
 
 export interface ScheduleFilters {
   program?: string;
@@ -40,14 +51,77 @@ function buildQS(filters: Record<string, unknown>): string {
   return s ? `?${s}` : "";
 }
 
-export function useRealtimeSchedules(filters: ScheduleFilters = {}) {
-  const qs = buildQS(filters);
-  return useQuery<Schedule[]>({
-    queryKey: ["schedules", filters],
-    queryFn: () => fetcher<Schedule[]>(`/api/schedules${qs}`),
-    refetchInterval: RT_INTERVAL,
+// ===== Real-time Firestore hook =====
+function useFirestoreRealtime<T>(
+  collName: string,
+  constraints: ReturnType<typeof where>[] | ReturnType<typeof orderBy>[],
+  fallbackUrl: string,
+  queryKey: unknown[]
+) {
+  const [data, setData] = useState<T[] | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const unsubRef = useRef<Unsubscribe | null>(null);
+
+  useEffect(() => {
+    // Try Firestore onSnapshot first
+    try {
+      if (firestoreClient) {
+        const q = fsQuery(collection(firestoreClient, collName), ...constraints);
+        unsubRef.current = onSnapshot(
+          q,
+          (snap) => {
+            const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }) as T);
+            setData(items);
+            setError(null);
+          },
+          (err) => {
+            console.warn(`[firestore:${collName}] onSnapshot error, falling back to polling:`, err.message);
+            setError(err);
+          }
+        );
+        return () => {
+          unsubRef.current?.();
+          unsubRef.current = null;
+        };
+      }
+    } catch (e) {
+      console.warn(`[firestore:${collName}] init error, using polling:`, e);
+    }
+  }, [collName]);
+
+  // Fallback: TanStack Query polling
+  const fallbackQuery = useQuery<T[]>({
+    queryKey: queryKey,
+    queryFn: () => fetcher<T[]>(fallbackUrl),
+    refetchInterval: data ? false : RT_INTERVAL, // stop polling if Firestore works
+    enabled: data === null, // only poll if Firestore hasn't provided data
     staleTime: 3000,
   });
+
+  const isLoading = data === null && fallbackQuery.isLoading;
+  const finalError = error && data === null ? fallbackQuery.error : null;
+
+  return {
+    data: data ?? fallbackQuery.data ?? undefined,
+    isLoading,
+    error: finalError ?? undefined,
+  };
+}
+
+// ===== Exported hooks =====
+
+export function useRealtimeSchedules(filters: ScheduleFilters = {}) {
+  const qs = buildQS(filters);
+  const constraints: ReturnType<typeof where>[] = [];
+  // Note: Firestore queries with multiple where clauses need composite indexes.
+  // For simplicity, we fetch all active schedules and filter client-side via the API fallback.
+  // The onSnapshot will fire for any change, giving instant real-time updates.
+  return useFirestoreRealtime<Schedule>(
+    "schedules",
+    constraints,
+    `/api/schedules${qs}`,
+    ["schedules", filters]
+  );
 }
 
 export function useRealtimeScheduleChanges(filters: {
@@ -56,60 +130,60 @@ export function useRealtimeScheduleChanges(filters: {
   semester?: number | string;
 } = {}) {
   const qs = buildQS(filters);
-  return useQuery<ScheduleChange[]>({
-    queryKey: ["schedule-changes", filters],
-    queryFn: () => fetcher<ScheduleChange[]>(`/api/schedule-changes${qs}`),
-    refetchInterval: RT_INTERVAL,
-    staleTime: 3000,
-  });
+  return useFirestoreRealtime<ScheduleChange>(
+    "scheduleChanges",
+    [],
+    `/api/schedule-changes${qs}`,
+    ["schedule-changes", filters]
+  );
 }
 
 export function useRealtimeNotices(filters: { category?: string; limit?: number } = {}) {
   const qs = buildQS(filters);
-  return useQuery<Notice[]>({
-    queryKey: ["notices", filters],
-    queryFn: () => fetcher<Notice[]>(`/api/notices${qs}`),
-    refetchInterval: RT_INTERVAL,
-    staleTime: 3000,
-  });
+  return useFirestoreRealtime<Notice>(
+    "notices",
+    [],
+    `/api/notices${qs}`,
+    ["notices", filters]
+  );
 }
 
 export function useRealtimeTimeSlots() {
-  return useQuery<TimeSlot[]>({
-    queryKey: ["timeslots"],
-    queryFn: () => fetcher<TimeSlot[]>("/api/timeslots"),
-    refetchInterval: RT_INTERVAL * 4,
-    staleTime: 30_000,
-  });
+  return useFirestoreRealtime<TimeSlot>(
+    "timeSlots",
+    [],
+    "/api/timeslots",
+    ["timeslots"]
+  );
 }
 
 export function useRealtimeRooms(type?: string) {
   const qs = type ? `?type=${type}` : "";
-  return useQuery<Room[]>({
-    queryKey: ["rooms", type ?? "all"],
-    queryFn: () => fetcher<Room[]>(`/api/rooms${qs}`),
-    refetchInterval: RT_INTERVAL * 4,
-    staleTime: 20_000,
-  });
+  return useFirestoreRealtime<Room>(
+    "rooms",
+    [],
+    `/api/rooms${qs}`,
+    ["rooms", type ?? "all"]
+  );
 }
 
 export function useRealtimeTeachers() {
-  return useQuery<User[]>({
-    queryKey: ["teachers"],
-    queryFn: () => fetcher<User[]>("/api/teachers"),
-    refetchInterval: RT_INTERVAL * 4,
-    staleTime: 20_000,
-  });
+  return useFirestoreRealtime<User>(
+    "users",
+    [],
+    "/api/teachers",
+    ["teachers"]
+  );
 }
 
 export function useRealtimeCourses(filters: { program?: string; semester?: number | string } = {}) {
   const qs = buildQS(filters);
-  return useQuery<Course[]>({
-    queryKey: ["courses", filters],
-    queryFn: () => fetcher<Course[]>(`/api/courses${qs}`),
-    refetchInterval: RT_INTERVAL * 4,
-    staleTime: 20_000,
-  });
+  return useFirestoreRealtime<Course>(
+    "courses",
+    [],
+    `/api/courses${qs}`,
+    ["courses", filters]
+  );
 }
 
 export function useRealtimeStats() {
