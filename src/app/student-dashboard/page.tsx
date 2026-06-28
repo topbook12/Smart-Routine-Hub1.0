@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { motion } from "framer-motion";
@@ -22,11 +22,18 @@ export default function StudentDashboardPage() {
   const { data: studentResp, isLoading: studentLoading } = useCurrentStudent();
   const student = studentResp?.student;
 
+  // Grace period so right after login the session has time to be picked up.
+  const [sessionGrace, setSessionGrace] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setSessionGrace(false), 2000);
+    return () => clearTimeout(t);
+  }, []);
+
   // Determine redirect target (if any) — perform the redirect in an effect,
   // never during render, to avoid "setState while rendering" errors.
   const role = (session?.user as { role?: string } | undefined)?.role;
   let redirectTarget: string | null = null;
-  if (status === "unauthenticated") {
+  if (!sessionGrace && status === "unauthenticated") {
     redirectTarget = "/login";
   } else if (status === "authenticated" && role && role !== "student") {
     // Logged in but not a student — send to the right dashboard
@@ -39,9 +46,9 @@ export default function StudentDashboardPage() {
     if (redirectTarget) router.replace(redirectTarget);
   }, [redirectTarget, router]);
 
-  // Loading: session loading, OR session authenticated as student but
-  // /api/student/me hasn't resolved yet (isLoading, not just !data).
-  if (status === "loading" || (status === "authenticated" && role === "student" && studentLoading && !studentResp)) {
+  // Loading: session loading, OR grace period active, OR session authenticated
+  // as student but /api/student/me hasn't resolved yet.
+  if (status === "loading" || (sessionGrace && status === "unauthenticated") || (status === "authenticated" && role === "student" && studentLoading && !studentResp)) {
     return <div className="min-h-[60vh] flex items-center justify-center"><LoadingState message="Loading your dashboard…" /></div>;
   }
   if (redirectTarget) {

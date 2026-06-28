@@ -66,13 +66,21 @@ export default function AdminPage() {
   const settings = useSettingsStore((s) => s.settings);
   const [section, setSection] = useState<SectionKey>("dashboard");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  // Give the session a brief grace period before redirecting to login,
+  // so that right after login (client-side navigation) the session cookie
+  // has time to be picked up by useSession().
+  const [sessionGrace, setSessionGrace] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setSessionGrace(false), 2000);
+    return () => clearTimeout(t);
+  }, []);
 
   // Redirect unauthenticated users in an effect (never during render).
   useEffect(() => {
-    if (status === "unauthenticated") router.replace("/login");
-  }, [status, router]);
+    if (!sessionGrace && status === "unauthenticated") router.replace("/login");
+  }, [status, router, sessionGrace]);
 
-  if (status === "loading") {
+  if (status === "loading" || (sessionGrace && status === "unauthenticated")) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <LoadingState message="Loading admin panel…" />

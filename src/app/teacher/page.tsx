@@ -103,15 +103,21 @@ export default function TeacherDashboardPage() {
   const { data: teachers } = useRealtimeTeachers();
 
   const [activeTab, setActiveTab] = useState<string>("schedule");
+  // Grace period so right after login the session has time to be picked up.
+  const [sessionGrace, setSessionGrace] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setSessionGrace(false), 2000);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (!sessionGrace && status === "unauthenticated") {
       router.replace("/login");
     }
-  }, [status, router]);
+  }, [status, router, sessionGrace]);
 
   // Loading state — only wait for session, not /api/user
-  if (status === "loading") {
+  if (status === "loading" || (sessionGrace && status === "unauthenticated")) {
     return (
       <LoadingState message="Loading your dashboard…" className="min-h-[70vh]" />
     );

@@ -172,19 +172,44 @@ function EmailForm() {
       return;
     }
     toast.success("Logged in successfully");
-    // Give NextAuth a moment to persist the session cookie, then fetch role.
-    // Without this delay, /api/user may return null (race condition) and the
-    // user gets bounced back to the login page.
-    await new Promise((r) => setTimeout(r, 400));
-    try {
-      const r = await fetch("/api/user", { cache: "no-store" }).then((x) => x.json());
-      const role = r?.user?.role;
-      if (role === "admin") router.replace("/admin");
-      else if (role === "teacher") router.replace("/teacher");
-      else if (role === "student") router.replace("/student-dashboard");
-      else router.replace("/");
-    } catch {
-      router.replace("/");
+
+    // signIn succeeded (no error). NextAuth has set the session cookie.
+    // Instead of immediately fetching /api/user (which may race with the
+    // cookie not being sent yet), wait a moment for the session to settle,
+    // then use useSession() on the target dashboard page to read the role.
+    // We do a simple role fetch with retries as a best-effort redirect.
+    let role: string | undefined;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await new Promise((r) => setTimeout(r, 500));
+      try {
+        const r2 = await fetch("/api/user", { cache: "no-store" }).then((x) => x.json());
+        role = r2?.user?.role;
+        if (role) break;
+      } catch {
+        // ignore and retry
+      }
+    }
+
+    // Even if role fetch failed, signIn succeeded so the session IS valid.
+    // The dashboard pages read role from useSession() directly, so just
+    // route to the most likely dashboard. Admin email is known, otherwise
+    // default to teacher.
+    if (role === "admin") router.replace("/admin");
+    else if (role === "teacher") router.replace("/teacher");
+    else if (role === "student") router.replace("/student-dashboard");
+    else {
+      // Fallback: role unknown but session exists. Check session via
+      // the NextAuth session endpoint.
+      try {
+        const sess = await fetch("/api/auth/session", { cache: "no-store" }).then((x) => x.json());
+        const sessRole = sess?.user?.role;
+        if (sessRole === "admin") router.replace("/admin");
+        else if (sessRole === "teacher") router.replace("/teacher");
+        else if (sessRole === "student") router.replace("/student-dashboard");
+        else router.replace("/");
+      } catch {
+        router.replace("/");
+      }
     }
   };
 
@@ -281,18 +306,33 @@ function PinForm() {
       return;
     }
     toast.success("PIN verified");
-    // Give NextAuth a moment to persist the session cookie before fetching
-    // the role, otherwise /api/user may return null (race condition).
-    await new Promise((r) => setTimeout(r, 400));
-    try {
-      const r = await fetch("/api/user", { cache: "no-store" }).then((x) => x.json());
-      const role = r?.user?.role;
-      if (role === "admin") router.replace("/admin");
-      else if (role === "teacher") router.replace("/teacher");
-      else if (role === "student") router.replace("/student-dashboard");
-      else router.replace("/");
-    } catch {
-      router.replace("/");
+    // Retry role fetch — session cookie needs a moment to settle.
+    let role: string | undefined;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await new Promise((r) => setTimeout(r, 500));
+      try {
+        const r2 = await fetch("/api/user", { cache: "no-store" }).then((x) => x.json());
+        role = r2?.user?.role;
+        if (role) break;
+      } catch {
+        // ignore and retry
+      }
+    }
+    if (role === "admin") router.replace("/admin");
+    else if (role === "teacher") router.replace("/teacher");
+    else if (role === "student") router.replace("/student-dashboard");
+    else {
+      // Fallback: check session endpoint
+      try {
+        const sess = await fetch("/api/auth/session", { cache: "no-store" }).then((x) => x.json());
+        const sessRole = sess?.user?.role;
+        if (sessRole === "admin") router.replace("/admin");
+        else if (sessRole === "teacher") router.replace("/teacher");
+        else if (sessRole === "student") router.replace("/student-dashboard");
+        else router.replace("/");
+      } catch {
+        router.replace("/");
+      }
     }
   };
 
@@ -426,7 +466,7 @@ function StudentForm() {
     toast.success("Logged in as student");
     // Small delay so NextAuth persists the session cookie before navigating
     // to the dashboard, which immediately checks authentication.
-    await new Promise((r) => setTimeout(r, 400));
+    await new Promise((r) => setTimeout(r, 600));
     router.replace("/student-dashboard");
   };
 
