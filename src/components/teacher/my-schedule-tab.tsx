@@ -33,6 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useToday } from "@/hooks/use-today";
+import { ClassActionDialog } from "@/components/teacher/class-action-dialog";
 
 type Processed = Schedule & {
   _moved?: boolean;
@@ -51,6 +52,8 @@ export function MyScheduleTab({ teacherId }: Props) {
   const [roomId, setRoomId] = useState<string>("all");
   const [day, setDay] = useState<string>("all");
   const [viewMode, setViewMode] = useState<ViewMode>("cards");
+  const [actionSchedule, setActionSchedule] = useState<Schedule | null>(null);
+  const [actionOpen, setActionOpen] = useState(false);
 
   const filters = {
     teacherId,
@@ -250,10 +253,25 @@ export function MyScheduleTab({ teacherId }: Props) {
           message="You have no scheduled classes matching these filters. Try adjusting the filters above."
         />
       ) : viewMode === "cards" ? (
-        <CardsView schedules={processed} changeMap={changeMap} today={today} />
+        <CardsView
+          schedules={processed}
+          changeMap={changeMap}
+          today={today}
+          onCardClick={(s) => {
+            setActionSchedule(s);
+            setActionOpen(true);
+          }}
+        />
       ) : (
         <ListView schedules={processed} />
       )}
+
+      {/* Class Action Dialog — opens when teacher clicks a class */}
+      <ClassActionDialog
+        schedule={actionSchedule}
+        open={actionOpen}
+        onOpenChange={setActionOpen}
+      />
     </div>
   );
 }
@@ -294,10 +312,12 @@ function CardsView({
   schedules,
   changeMap,
   today,
+  onCardClick,
 }: {
   schedules: Processed[];
   changeMap: Map<string, ScheduleChange>;
   today: DayOfWeek | null;
+  onCardClick?: (s: Schedule) => void;
 }) {
   const grouped = useMemo(() => {
     const m = new Map<DayOfWeek, Processed[]>();
@@ -358,12 +378,17 @@ function CardsView({
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {items.map((s, i) => (
-                <ScheduleCard
+                <div
                   key={s.id}
-                  schedule={s}
-                  change={changeMap.get(s.id) ?? s._change}
-                  index={i}
-                />
+                  onClick={() => onCardClick?.(s)}
+                  className={cn(onCardClick && "cursor-pointer")}
+                >
+                  <ScheduleCard
+                    schedule={s}
+                    change={changeMap.get(s.id) ?? s._change}
+                    index={i}
+                  />
+                </div>
               ))}
             </div>
           </motion.section>
