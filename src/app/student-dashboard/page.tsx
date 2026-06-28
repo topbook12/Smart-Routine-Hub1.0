@@ -20,36 +20,19 @@ export default function StudentDashboardPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const { data: studentResp, isLoading: studentLoading } = useCurrentStudent();
-
-  // DEV BYPASS: in development, skip auth so dashboards can be viewed directly.
-  // Remove this block to re-enable authentication.
-  const isDev = process.env.NODE_ENV !== "production";
-
-  // In dev mode, create a mock student so the dashboard renders without login.
-  const devStudent: NonNullable<ReturnType<typeof useCurrentStudent>["data"]>["student"] = {
-    id: "dev-student",
-    fullName: "Dev Student",
-    rollNumber: "30001",
-    program: "bsc",
-    semester: 1,
-    role: "student",
-    isActive: true,
-  };
-  const student = isDev ? (studentResp?.student ?? devStudent) : studentResp?.student;
+  const student = studentResp?.student;
 
   // Determine redirect target (if any) — perform the redirect in an effect,
   // never during render, to avoid "setState while rendering" errors.
   const role = (session?.user as { role?: string } | undefined)?.role;
   let redirectTarget: string | null = null;
-  if (!isDev) {
-    if (status === "unauthenticated") {
-      redirectTarget = "/login";
-    } else if (status === "authenticated" && role && role !== "student") {
-      // Logged in but not a student — send to the right dashboard
-      if (role === "admin") redirectTarget = "/admin";
-      else if (role === "teacher") redirectTarget = "/teacher";
-      else redirectTarget = "/login";
-    }
+  if (status === "unauthenticated") {
+    redirectTarget = "/login";
+  } else if (status === "authenticated" && role && role !== "student") {
+    // Logged in but not a student — send to the right dashboard
+    if (role === "admin") redirectTarget = "/admin";
+    else if (role === "teacher") redirectTarget = "/teacher";
+    else redirectTarget = "/login";
   }
 
   useEffect(() => {
@@ -57,8 +40,8 @@ export default function StudentDashboardPage() {
   }, [redirectTarget, router]);
 
   // Loading: session loading, OR session authenticated as student but
-  // /api/student/me hasn't resolved yet (skip in dev).
-  if (!isDev && (status === "loading" || (status === "authenticated" && role === "student" && studentLoading && !studentResp))) {
+  // /api/student/me hasn't resolved yet (isLoading, not just !data).
+  if (status === "loading" || (status === "authenticated" && role === "student" && studentLoading && !studentResp)) {
     return <div className="min-h-[60vh] flex items-center justify-center"><LoadingState message="Loading your dashboard…" /></div>;
   }
   if (redirectTarget) {
