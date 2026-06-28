@@ -67,12 +67,17 @@ export default function AdminPage() {
   const [section, setSection] = useState<SectionKey>("dashboard");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
+  // DEV BYPASS: in development, skip auth so dashboards can be viewed directly.
+  // Remove this block to re-enable authentication.
+  const isDev = process.env.NODE_ENV !== "production";
+
   // Redirect unauthenticated users in an effect (never during render).
   useEffect(() => {
+    if (isDev) return; // dev bypass
     if (status === "unauthenticated") router.replace("/login");
-  }, [status, router]);
+  }, [status, router, isDev]);
 
-  if (status === "loading") {
+  if (!isDev && status === "loading") {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <LoadingState message="Loading admin panel…" />
@@ -80,7 +85,7 @@ export default function AdminPage() {
     );
   }
 
-  if (status === "unauthenticated") {
+  if (!isDev && status === "unauthenticated") {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <LoadingState message="Redirecting to login…" />
@@ -89,10 +94,13 @@ export default function AdminPage() {
   }
 
   // Derive role directly from the NextAuth session token (no extra fetch needed).
-  const sessionRole = (session?.user as { role?: string } | undefined)?.role;
-  const sessionName = session?.user?.name ?? "Admin";
+  // In dev mode, default to admin if no session.
+  const sessionRole = isDev
+    ? (session?.user as { role?: string } | undefined)?.role ?? "admin"
+    : (session?.user as { role?: string } | undefined)?.role;
+  const sessionName = session?.user?.name ?? "Developer Admin";
 
-  if (sessionRole && sessionRole !== "admin") {
+  if (!isDev && sessionRole && sessionRole !== "admin") {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <motion.div
@@ -116,7 +124,8 @@ export default function AdminPage() {
   }
 
   // session authenticated but role not yet in token — show loader briefly
-  if (!sessionRole) {
+  // (skip in dev mode since we default role to admin)
+  if (!isDev && !sessionRole) {
     return <div className="min-h-[60vh] flex items-center justify-center"><LoadingState /></div>;
   }
 

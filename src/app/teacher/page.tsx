@@ -83,6 +83,10 @@ export default function TeacherDashboardPage() {
   const { data: session, status } = useSession();
   const { data: userResp } = useCurrentUser();
 
+  // DEV BYPASS: in development, skip auth so dashboards can be viewed directly.
+  // Remove this block to re-enable authentication.
+  const isDev = process.env.NODE_ENV !== "production";
+
   // Derive user directly from the NextAuth session token so the page can
   // render immediately after login without waiting for /api/user to resolve.
   // The full user object (from /api/user) is still preferred when available
@@ -96,27 +100,42 @@ export default function TeacherDashboardPage() {
         role: sessionUser.role as "admin" | "teacher",
         isActive: true,
       }
+    : isDev
+    ? {
+        id: "dev-teacher",
+        fullName: "Dr. Md. Rafiqul Hasan",
+        email: "mrh@ice.ru.ac.bd",
+        role: "teacher" as const,
+        isActive: true,
+      }
     : null);
 
   // Admin can pick any teacher to view as
   const [adminTeacherId, setAdminTeacherId] = useState<string>("");
   const { data: teachers } = useRealtimeTeachers();
+
+  // In dev mode (no real session), use the first real teacher's id so
+  // schedule/notice tabs have data to show.
+  const devTeacherId = teachers?.[0]?.id ?? "dev-teacher";
+  const devTeacherName = teachers?.[0]?.fullName ?? "Dr. Md. Rafiqul Hasan";
+
   const [activeTab, setActiveTab] = useState<string>("schedule");
 
   useEffect(() => {
+    if (isDev) return; // dev bypass
     if (status === "unauthenticated") {
       router.replace("/login");
     }
-  }, [status, router]);
+  }, [status, router, isDev]);
 
-  // Loading state — only wait for session, not /api/user
-  if (status === "loading") {
+  // Loading state — only wait for session, not /api/user (skip in dev)
+  if (!isDev && status === "loading") {
     return (
       <LoadingState message="Loading your dashboard…" className="min-h-[70vh]" />
     );
   }
 
-  if (status === "unauthenticated") {
+  if (!isDev && status === "unauthenticated") {
     return <LoadingState message="Redirecting to login…" className="min-h-[70vh]" />;
   }
 
@@ -124,17 +143,21 @@ export default function TeacherDashboardPage() {
     return <LoadingState message="Loading…" className="min-h-[70vh]" />;
   }
 
-  // Access denied for non-teacher/non-admin
-  if (user.role !== "teacher" && user.role !== "admin") {
+  // Access denied for non-teacher/non-admin (skip in dev)
+  if (!isDev && user.role !== "teacher" && user.role !== "admin") {
     return <AccessDenied />;
   }
 
-  const isAdmin = user.role === "admin";
-  const effectiveTeacherId = isAdmin ? adminTeacherId : user.id;
+  const isAdmin = isDev ? false : user.role === "admin";
+  // In dev mode, override user id/name with a real teacher so tabs show data.
+  const effectiveUser = isDev
+    ? { ...user, id: devTeacherId, fullName: devTeacherName }
+    : user;
+  const effectiveTeacherId = isAdmin ? adminTeacherId : effectiveUser.id;
 
   const effectiveTeacherName = isAdmin
     ? teachers?.find((x) => x.id === adminTeacherId)?.fullName ?? "—"
-    : user.fullName;
+    : effectiveUser.fullName;
 
   const handleLogout = () => {
     signOut({ callbackUrl: "/login" });
@@ -143,7 +166,7 @@ export default function TeacherDashboardPage() {
   return (
     <div className="min-h-screen flex flex-col hero-bg">
       {/* Header */}
-      <TeacherHeader user={user} onLogout={handleLogout} />
+      <TeacherHeader user={effectiveUser} onLogout={handleLogout} />
 
       {/* Admin teacher picker banner */}
       {isAdmin && (
@@ -202,7 +225,7 @@ export default function TeacherDashboardPage() {
           </TabsContent>
 
           <TabsContent value="notices" className="outline-none">
-            <NoticesTab userId={user.id} userName={user.fullName} />
+            <NoticesTab userId={effectiveUser.id} userName={effectiveUser.fullName} />
           </TabsContent>
 
           <TabsContent value="extra" className="outline-none">
@@ -217,7 +240,7 @@ export default function TeacherDashboardPage() {
           </TabsContent>
 
           <TabsContent value="profile" className="outline-none">
-            <ProfileTab userId={user.id} />
+            <ProfileTab userId={effectiveUser.id} />
           </TabsContent>
         </Tabs>
       </main>
