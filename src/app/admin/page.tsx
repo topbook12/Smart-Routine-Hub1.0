@@ -27,7 +27,7 @@ import { useSettingsStore } from "@/store/settings-store";
 import { LoadingState } from "@/components/shared/states";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
 import { AdminDashboardSection } from "@/components/admin/dashboard-section";
@@ -223,6 +223,9 @@ export default function AdminPage() {
       {/* Mobile sidebar (Sheet) */}
       <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
         <SheetContent side="left" className="w-72 p-0">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Admin Navigation</SheetTitle>
+          </SheetHeader>
           {SidebarContent}
         </SheetContent>
       </Sheet>
