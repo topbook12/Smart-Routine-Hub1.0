@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getSessionUser } from "@/lib/session";
+import { getEffectiveUser } from "@/lib/effective-user";
 import bcrypt from "bcryptjs";
 
 export async function GET() {
@@ -25,7 +25,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const user = await getSessionUser();
+  const user = await getEffectiveUser();
   if (!user || user.role !== "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 }
 
 export async function PUT(req: Request) {
-  const user = await getSessionUser();
+  const user = await getEffectiveUser();
   if (!user || user.role !== "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -66,7 +66,7 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const user = await getSessionUser();
+  const user = await getEffectiveUser();
   if (!user || user.role !== "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

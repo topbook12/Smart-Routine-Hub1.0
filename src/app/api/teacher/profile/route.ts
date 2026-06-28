@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getSessionUser } from "@/lib/session";
+import { getEffectiveUser } from "@/lib/effective-user";
 import bcrypt from "bcryptjs";
 
 // GET /api/teacher/profile — current teacher's full profile
 export async function GET() {
-  const user = await getSessionUser();
+  const user = await getEffectiveUser();
   if (!user || (user.role !== "teacher" && user.role !== "admin")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -29,7 +29,7 @@ export async function GET() {
 
 // PUT /api/teacher/profile — update own profile (teacher/admin can update self)
 export async function PUT(req: Request) {
-  const user = await getSessionUser();
+  const user = await getEffectiveUser();
   if (!user || (user.role !== "teacher" && user.role !== "admin")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

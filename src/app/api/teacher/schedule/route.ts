@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getSessionUser } from "@/lib/session";
+import { getEffectiveUser } from "@/lib/effective-user";
 import type { Prisma } from "@prisma/client";
 
 // GET /api/teacher/schedule — current teacher's schedules (with optional day filter)
 export async function GET(req: Request) {
-  const user = await getSessionUser();
+  const user = await getEffectiveUser();
   if (!user || (user.role !== "teacher" && user.role !== "admin")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -23,7 +23,7 @@ export async function GET(req: Request) {
 // PUT /api/teacher/schedule — update one of the teacher's own schedule entries
 // Body: { id, startTime?, endTime?, dayOfWeek?, roomId?, roomNumber? }
 export async function PUT(req: Request) {
-  const user = await getSessionUser();
+  const user = await getEffectiveUser();
   if (!user || (user.role !== "teacher" && user.role !== "admin")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
