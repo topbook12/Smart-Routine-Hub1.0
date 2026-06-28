@@ -219,11 +219,11 @@ export function MasterCalendarView() {
           message="Try adjusting or resetting the filters to see the full routine."
         />
       ) : viewMode === "cards" ? (
-        <CardsView schedules={schedules} changeMap={changeMap} />
+        <CardsView schedules={schedules} changeMap={changeMap} today={today} />
       ) : viewMode === "list" ? (
-        <ListView schedules={schedules} changeMap={changeMap} />
+        <ListView schedules={schedules} changeMap={changeMap} today={today} />
       ) : (
-        <GridView schedules={schedules} changeMap={changeMap} />
+        <GridView schedules={schedules} changeMap={changeMap} today={today} />
       )}
     </div>
   );
@@ -232,9 +232,11 @@ export function MasterCalendarView() {
 function CardsView({
   schedules,
   changeMap,
+  today,
 }: {
   schedules: Schedule[];
   changeMap: Map<string, Schedule["id"] extends never ? never : NonNullable<ReturnType<typeof useRealtimeScheduleChanges>["data"]>[number]>;
+  today: DayOfWeek | null;
 }) {
   const grouped = useMemo(() => {
     const m = new Map<DayOfWeek, Schedule[]>();
@@ -286,9 +288,11 @@ function CardsView({
 function ListView({
   schedules,
   changeMap,
+  today,
 }: {
   schedules: Schedule[];
   changeMap: Map<string, NonNullable<ReturnType<typeof useRealtimeScheduleChanges>["data"]>[number]>;
+  today: DayOfWeek | null;
 }) {
   const sorted = useMemo(
     () =>
@@ -361,9 +365,11 @@ function ListView({
 function GridView({
   schedules,
   changeMap,
+  today,
 }: {
   schedules: Schedule[];
   changeMap: Map<string, NonNullable<ReturnType<typeof useRealtimeScheduleChanges>["data"]>[number]>;
+  today: DayOfWeek | null;
 }) {
   const [weekOffset, setWeekOffset] = useState(0);
 

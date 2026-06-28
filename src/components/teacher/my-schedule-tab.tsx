@@ -250,7 +250,7 @@ export function MyScheduleTab({ teacherId }: Props) {
           message="You have no scheduled classes matching these filters. Try adjusting the filters above."
         />
       ) : viewMode === "cards" ? (
-        <CardsView schedules={processed} changeMap={changeMap} />
+        <CardsView schedules={processed} changeMap={changeMap} today={today} />
       ) : (
         <ListView schedules={processed} />
       )}
@@ -293,9 +293,11 @@ function FilterSelect({
 function CardsView({
   schedules,
   changeMap,
+  today,
 }: {
   schedules: Processed[];
   changeMap: Map<string, ScheduleChange>;
+  today: DayOfWeek | null;
 }) {
   const grouped = useMemo(() => {
     const m = new Map<DayOfWeek, Processed[]>();

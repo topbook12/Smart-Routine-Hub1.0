@@ -189,11 +189,11 @@ export function StudentView() {
           message={`There are no active classes for ${program.toUpperCase()} Semester ${semester}. Try a different semester.`}
         />
       ) : viewMode === "cards" ? (
-        <StudentCardsView schedules={processed} changeMap={changeMap} />
+        <StudentCardsView schedules={processed} changeMap={changeMap} today={today} />
       ) : viewMode === "list" ? (
         <StudentListView schedules={processed} changeMap={changeMap} />
       ) : (
-        <StudentTimelineView schedules={processed} changeMap={changeMap} />
+        <StudentTimelineView schedules={processed} changeMap={changeMap} today={today} />
       )}
     </div>
   );
@@ -208,9 +208,11 @@ type ProcessedSchedule = Schedule & {
 function StudentCardsView({
   schedules,
   changeMap,
+  today,
 }: {
   schedules: ProcessedSchedule[];
   changeMap: Map<string, NonNullable<ReturnType<typeof useRealtimeScheduleChanges>["data"]>[number]>;
+  today: DayOfWeek | null;
 }) {
   const grouped = useMemo(() => {
     const m = new Map<DayOfWeek, ProcessedSchedule[]>();
@@ -339,9 +341,11 @@ function StudentListView({
 
 function StudentTimelineView({
   schedules,
+  today,
 }: {
   schedules: ProcessedSchedule[];
   changeMap: Map<string, NonNullable<ReturnType<typeof useRealtimeScheduleChanges>["data"]>[number]>;
+  today: DayOfWeek | null;
 }) {
   const grouped = useMemo(() => {
     const m = new Map<DayOfWeek, ProcessedSchedule[]>();
