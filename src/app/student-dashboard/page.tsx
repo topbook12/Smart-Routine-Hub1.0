@@ -14,11 +14,7 @@ import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-
-const TODAY_NAME: DayOfWeek = (() => {
-  const days: DayOfWeek[] = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  return days[new Date().getDay()] as DayOfWeek;
-})();
+import { useToday } from "@/hooks/use-today";
 
 export default function StudentDashboardPage() {
   const router = useRouter();
@@ -60,6 +56,7 @@ export default function StudentDashboardPage() {
 
 function StudentDashboard({ student }: { student: NonNullable<ReturnType<typeof useCurrentStudent>["data"]>["student"] }) {
   const router = useRouter();
+  const today = useToday();
   const { data: schedules, isLoading: schedLoading } = useRealtimeSchedules({ program: student.program, semester: student.semester });
   const { data: allNotices } = useRealtimeNotices({ limit: 50 });
 
@@ -82,7 +79,7 @@ function StudentDashboard({ student }: { student: NonNullable<ReturnType<typeof 
   }
   for (const arr of grouped.values()) arr.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-  const todayClasses = (schedules ?? []).filter((s) => s.dayOfWeek === TODAY_NAME).length;
+  const todayClasses = (schedules ?? []).filter((s) => s.dayOfWeek === today).length;
   const totalClasses = schedules?.length ?? 0;
   const activeDays = new Set(schedules?.map((s) => s.dayOfWeek)).size;
 
@@ -158,7 +155,7 @@ function StudentDashboard({ student }: { student: NonNullable<ReturnType<typeof 
             {DAYS.map((d, di) => {
               const items = grouped.get(d) ?? [];
               if (items.length === 0) return null;
-              const isToday = d === TODAY_NAME;
+              const isToday = d === today;
               return (
                 <motion.section key={d} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(di * 0.05, 0.3) }}>
                   <div className={cn("rounded-lg p-3 mb-3 flex items-center justify-between", isToday ? "bg-ink text-white shadow-teal-glow" : "bg-card shadow-[0_1px_3px_rgba(36,28,21,0.05),0_4px_12px_rgba(36,28,21,0.04)]")}>

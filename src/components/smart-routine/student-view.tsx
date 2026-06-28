@@ -21,15 +21,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-
-const TODAY_NAME: DayOfWeek = (() => {
-  const days: DayOfWeek[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  return days[new Date().getDay()] as DayOfWeek;
-})();
+import { useToday } from "@/hooks/use-today";
 
 export function StudentView() {
   const router = useRouter();
   const sp = useSearchParams();
+  const today = useToday();
   const [program, setProgram] = useState<"bsc" | "msc">(
     (sp.get("program") as "bsc" | "msc") || "bsc"
   );
@@ -173,9 +170,9 @@ export function StudentView() {
           <h2 className="font-bold text-lg">
             {program === "bsc" ? "B.Sc." : "M.Sc."} · Semester {semester}
           </h2>
-          {TODAY_NAME && (
+          {today && (
             <Badge variant="outline" className="text-[10px] h-5">
-              Today: {TODAY_NAME}
+              Today: {today}
             </Badge>
           )}
         </div>
@@ -231,7 +228,7 @@ function StudentCardsView({
       {DAYS.map((d, di) => {
         const items = grouped.get(d) ?? [];
         if (items.length === 0) return null;
-        const isToday = d === TODAY_NAME;
+        const isToday = d === today;
         return (
           <motion.section
             key={d}
@@ -366,7 +363,7 @@ function StudentTimelineView({
         {DAYS.map((d) => {
           const items = grouped.get(d) ?? [];
           if (items.length === 0) return null;
-          const isToday = d === TODAY_NAME;
+          const isToday = d === today;
           return (
             <div key={d} className="relative">
               {/* Day marker */}

@@ -32,19 +32,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-const TODAY_NAME: DayOfWeek = (() => {
-  const days: DayOfWeek[] = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  return days[new Date().getDay()] as DayOfWeek;
-})();
+import { useToday } from "@/hooks/use-today";
 
 type Processed = Schedule & {
   _moved?: boolean;
@@ -57,6 +45,7 @@ interface Props {
 }
 
 export function MyScheduleTab({ teacherId }: Props) {
+  const today = useToday();
   const [semester, setSemester] = useState<string>("all");
   const [program, setProgram] = useState<string>("all");
   const [roomId, setRoomId] = useState<string>("all");
@@ -117,8 +106,8 @@ export function MyScheduleTab({ teacherId }: Props) {
   }, [schedules, changeMap]);
 
   const todayCount = useMemo(
-    () => processed.filter((s) => s.dayOfWeek === TODAY_NAME).length,
-    [processed]
+    () => processed.filter((s) => s.dayOfWeek === today).length,
+    [processed, today]
   );
   const distinctCourses = useMemo(
     () => new Set(processed.map((s) => s.courseCode)).size,
@@ -241,7 +230,7 @@ export function MyScheduleTab({ teacherId }: Props) {
         <div className="flex items-center gap-2">
           <h2 className="font-bold text-lg sm:text-xl">My Weekly Routine</h2>
           <Badge variant="outline" className="text-[10px] h-5">
-            Today: {TODAY_NAME.slice(0, 3)}
+            Today: {today ? today.slice(0, 3) : "—"}
           </Badge>
         </div>
         <ViewModeToggle
@@ -325,7 +314,7 @@ function CardsView({
       {DAYS.map((d, di) => {
         const items = grouped.get(d) ?? [];
         if (items.length === 0) return null;
-        const isToday = d === TODAY_NAME;
+        const isToday = d === today;
         return (
           <motion.section
             key={d}

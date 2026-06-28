@@ -39,14 +39,11 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-
-const TODAY = (() => {
-  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  return days[new Date().getDay()];
-})();
+import { useToday } from "@/hooks/use-today";
 
 export function HomeView() {
   const router = useRouter();
+  const today = useToday();
   const online = useUIStore((s) => s.online);
   const notificationsEnabled = useUIStore((s) => s.notificationsEnabled);
   const setNotificationsEnabled = useUIStore((s) => s.setNotificationsEnabled);
@@ -196,7 +193,7 @@ export function HomeView() {
                 <Zap className="h-3.5 w-3.5" /> Real-time sync
               </span>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted text-muted-foreground font-medium">
-                <CalendarDays className="h-3.5 w-3.5" /> Today: {TODAY}
+                <CalendarDays className="h-3.5 w-3.5" /> Today: {today ?? "—"}
               </span>
             </div>
           </motion.div>

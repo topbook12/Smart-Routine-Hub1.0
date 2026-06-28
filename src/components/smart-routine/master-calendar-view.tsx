@@ -34,15 +34,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-
-const TODAY_NAME: DayOfWeek = (() => {
-  const days: DayOfWeek[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  return days[new Date().getDay()] as DayOfWeek;
-})();
+import { useToday } from "@/hooks/use-today";
 
 export function MasterCalendarView() {
   const router = useRouter();
   const sp = useSearchParams();
+  const today = useToday();
 
   // Filters (initialised from URL)
   const [program, setProgram] = useState<string>(sp.get("program") || "all");
@@ -105,8 +102,8 @@ export function MasterCalendarView() {
     [schedules]
   );
   const todayCount = useMemo(
-    () => schedules?.filter((s) => s.dayOfWeek === TODAY_NAME).length ?? 0,
-    [schedules]
+    () => schedules?.filter((s) => s.dayOfWeek === today).length ?? 0,
+    [schedules, today]
   );
 
   return (
@@ -257,7 +254,7 @@ function CardsView({
       {DAYS.map((d, di) => {
         const items = grouped.get(d) ?? [];
         if (items.length === 0) return null;
-        const isToday = d === TODAY_NAME;
+        const isToday = d === today;
         return (
           <motion.section
             key={d}
@@ -331,7 +328,7 @@ function ListView({
             >
               <div className="col-span-4 sm:col-span-2 font-medium">
                 {s.dayOfWeek.slice(0, 3)}
-                {s.dayOfWeek === TODAY_NAME && (
+                {s.dayOfWeek === today && (
                   <span className="ml-1 text-[9px] text-primary font-bold">TODAY</span>
                 )}
               </div>
@@ -430,11 +427,11 @@ function GridView({
                 key={d}
                 className={cn(
                   "px-3 py-2.5 text-xs font-semibold border-r text-center",
-                  d === TODAY_NAME && "bg-primary/10 text-primary"
+                  d === today && "bg-primary/10 text-primary"
                 )}
               >
                 {d.slice(0, 3)}
-                {d === TODAY_NAME && (
+                {d === today && (
                   <span className="block text-[9px] text-primary font-bold">TODAY</span>
                 )}
               </div>
