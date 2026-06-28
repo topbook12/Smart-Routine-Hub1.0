@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Fraunces } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
@@ -84,11 +85,13 @@ export default function RootLayout({
             <QueryProvider>
               <SettingsSync />
               <PWARegister />
-              <DesktopNav />
-              <MobileHeader />
+              <Suspense fallback={null}>
+                <DesktopNav />
+                <MobileHeader />
+                <Footer />
+                <MobileBottomNav />
+              </Suspense>
               <main className="flex-1 w-full">{children}</main>
-              <Footer />
-              <MobileBottomNav />
               <Toaster position="top-center" richColors />
             </QueryProvider>
           </NextAuthProvider>
