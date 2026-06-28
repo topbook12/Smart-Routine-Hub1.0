@@ -9,6 +9,7 @@ import {
   BookOpen,
   CalendarDays,
   ChevronLeft,
+  GraduationCap,
   Home,
   LayoutDashboard,
   Library,
@@ -38,10 +39,12 @@ import { SchedulesSection } from "@/components/admin/schedules-section";
 import { NoticesSection } from "@/components/admin/notices-section";
 import { LibrarySection } from "@/components/admin/library-section";
 import { SettingsSection } from "@/components/admin/settings-section";
+import { StudentsSection } from "@/components/admin/students-section";
 
 type SectionKey =
   | "dashboard"
   | "teachers"
+  | "students"
   | "courses"
   | "rooms"
   | "schedules"
@@ -52,6 +55,7 @@ type SectionKey =
 const NAV: { key: SectionKey; label: string; Icon: typeof LayoutDashboard }[] = [
   { key: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
   { key: "teachers", label: "Teachers", Icon: Users },
+  { key: "students", label: "Students", Icon: GraduationCap },
   { key: "courses", label: "Courses", Icon: BookOpen },
   { key: "rooms", label: "Rooms", Icon: MapPin },
   { key: "schedules", label: "Schedules", Icon: CalendarDays },
@@ -272,6 +276,7 @@ export default function AdminPage() {
             >
               {section === "dashboard" && <AdminDashboardSection onNavigate={setSection} />}
               {section === "teachers" && <TeachersSection />}
+              {section === "students" && <StudentsSection />}
               {section === "courses" && <CoursesSection />}
               {section === "rooms" && <RoomsSection />}
               {section === "schedules" && <SchedulesSection />}

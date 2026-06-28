@@ -255,3 +255,23 @@ export function useCurrentStudent() {
     staleTime: 10_000,
   });
 }
+
+// Admin student management — fetches from API (not Firestore, since
+// student passwords shouldn't be in Firestore)
+export function useRealtimeStudents(filters: { program?: string; semester?: number | string } = {}) {
+  const qs = buildQS(filters);
+  return useQuery({
+    queryKey: ["students", filters],
+    queryFn: () => fetcher<Array<{
+      id: string;
+      fullName: string;
+      rollNumber: string;
+      program: string;
+      semester: number;
+      isActive: boolean;
+      createdAt: string;
+    }>>(`/api/students${qs}`),
+    refetchInterval: 10000,
+    staleTime: 5000,
+  });
+}
